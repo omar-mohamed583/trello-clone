@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Trello Clone</title>
+    <link
+      rel="stylesheet"
+      href="css/style.css"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      rel="icon"
+      href="images/logo.svg"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-dvh bg-[#091413] text-white">
+    <header class="fixed inset-[0_0_auto_0] bg-[var(--clr-accent-200)]">
+      <div
+        class="container flex px-2 lg:px-6 py-6 justify-center max-w-[1700px] mx-auto"
+      >
+        <h1
+          class="text-2xl flex gap-2 font-bold text-[var(--clr-accent-400)] cursor-pointer items-center me-auto animate-[bright_3s_infinite_alternate]"
+        >
+          <img
+            src="images/logo.svg"
+            alt="logo"
+            width="32"
+            height="32"
+          />
+          Trello Clone
+        </h1>
+
+        <div class="boards grid relative">
+          <div class="flex gap-4">
+            <button
+              class="toggle-boards tracking-wide flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [div:has(+_.active)_>_&]:outline outline-4 outline-gray-500 [div:has(+_.active)_>_&]:bg-zinc-300/20 [div:has(+_.active)_>_&_svg]:rotate-[180deg]"
+            >
+              Boards
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#FFFFFF"
+                class="transition-transform"
+              >
+                <path
+                  d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"
+                />
+              </svg>
+            </button>
+            <button
+              class="add-board flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [&:has(+_.active)]:outline outline-4"
+            >
+              Add New Board
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#FFFFFF"
+              >
+                <path
+                  d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+                />
+              </svg>
+            </button>
+          </div>
+          <ul
+            class="board-list absolute scale-y-0 transition-transform origin-top [&.active]:scale-y-100 duration-100 left-0 top-[115%] rounded-md bg-zinc-500 min-h-12 grid *:p-3 p-1 *:cursor-pointer *:w-56 *:transition-colors [&_>_*:hover]:text-gray-300 *:flex *:justify-between z-10"
+          ></ul>
+        </div>
+
+        <div class="account relative ms-auto">
+          <div
+            class="profile-icon aspect-square w-12 rounded-[50%] bg-purple-600 flex place-items-center justify-center cursor-pointer [&:has(+_.active)]:outline outline-4 uppercase outline-gray-500 outline-offset-1"
+          >
+            J
+          </div>
+          <ul
+            class="profile absolute top-[113%] right-0 rounded-md p-2 bg-zinc-500 grid *:py-4 *:px-2 *:font-medium transition-transform scale-y-0 [&.active]:scale-y-100 origin-top z-20 min-w-max *:transition-colors *:rounded-md [&_>_*:hover]:bg-zinc-300/20 *:cursor-pointer"
+          >
+            <li>Edit personal details</li>
+            <li>Change password</li>
+            <li class="flex items-center justify-between text-rose-200">
+              Logout
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                class="fill-rose-200"
+                width="24px"
+              >
+                <path
+                  d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+                />
+              </svg>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main class="grid gap-6 px-2 lg:px-6 pb-6 pt-[9rem]">
+      <h2 class="text-lg">Board: <span class="current-board-name"></span></h2>
+      <div class="main-content grid gap-6"></div>
+
+      <button
+        class="no-acc p-3 bg-[var(--clr-accent-300)] max-w-fit justify-self-center rounded-md"
+        style="display: none;"
+        onclick="window.location.href = './sign-in.html'"
+      >
+        Please Sign Up To Save Your Trello
+      </button>
+    </main>
+
+    <dialog
+      class="fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] bg-[var(--clr-accent-300)] p-4 [&[open]]:grid border border-zinc-400/20 rounded-md"
+    >
+      <!-- Update Cards Details Or Create Ones -->
+      <form
+        action=""
+        method="dialog"
+      >
+        <label for="name">Name</label>
+      </form>
+    </dialog>
+
+    <script
+      src="js/script.js"
+      type="module"
+      defer
+    ></script>
+  </body>
+</html>

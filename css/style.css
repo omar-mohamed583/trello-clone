@@ -1,0 +1,50 @@
+html {
+  scroll-behavior: smooth;
+  font-family: "Google Sans", sans-serif !important;
+  font-optical-sizing: auto!important;
+  font-weight: 400!important;
+  font-style: normal!important;
+  font-variation-settings:
+    "GRAD" 0!important;
+    line-height: unset!important;
+}
+
+:root {
+  --clr-accent-100: #091413;
+  --clr-accent-200: #285A48;
+  --clr-accent-300: #408A71;
+  --clr-accent-400: #B0E4CC;
+  --main-duration: 100ms;
+}
+
+input {
+  border: 0;
+  outline: 0;
+
+  &:focus {
+    border: 0;
+    outline: 0;
+  }
+
+  &:autofill {
+    transition: 99999999999999999s;
+  }
+}
+
+.main-content {
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.account li:nth-child(1) input {
+  border-bottom: 1px solid #fff;
+}
+
+input:has([id="clr"]) {
+  border: 1px solid #ffff!important;
+}
+
+@keyframes bright {
+  to {
+    filter: brightness(150%) saturate(280%);
+  }
+}
