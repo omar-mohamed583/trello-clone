@@ -1,8 +1,9 @@
 export { users, saveUser, getUser, addUser, deleteUser } from "./users.js";
+import { users } from "./users.js";
 
 export const boards = JSON.parse(localStorage.getItem('boards')) ?? {
-  boardsCount: 1,
-  sectionsCount: 3,
+  boardsCount: 0,
+  sectionsCount: 0,
   nodesCount: 0,
   boardsData: [
     // {
@@ -102,7 +103,8 @@ export function addSection(boardId, title) {
   boards.boardsData[boardId].content.push({
     title,
     id: boards.sectionsCount,
-    order: boards.sectionsCount++
+    order: boards.sectionsCount++,
+    nodes: []
   });
   saveBoard();
 }
@@ -146,17 +148,22 @@ export function changeSectionsOrder(boardId, replacedSectionId, replacedBySectio
 }
 
 export function addBoard(userId, title) {
-  boards.boardsData.push({
+  boards.boardsData.unshift({
     userId,
-    boardId: boards.boardsCount++,
-    title
+    boardId: boards.boardsCount,
+    title,
+    content: []
   });
   saveBoard();
+  addSection(boards.boardsCount, 'Todo');
+  addSection(boards.boardsCount, 'In Progress');
+  addSection(boards.boardsCount++, 'Done');
 }
 
 export function deleteBoard(boardsId) {
   boards.boardsData.splice(boardsId, 1);
   boards.boardsCount--;
+  if (users.activeBoardId === boardsId) users.activeBoardId = null;
   saveBoard();
 }
 

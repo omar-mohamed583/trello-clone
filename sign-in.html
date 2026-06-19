@@ -9,7 +9,7 @@
     <title>Trello Clone</title>
     <link
       rel="stylesheet"
-      href="css/sign-in.css"
+      href="css/style.css"
     />
     <link
       rel="preconnect"
@@ -37,63 +37,50 @@
       rel="icon"
       href="images/logo.svg"
     />
-    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="bg-[var(--clr-accent-100)]">
+  <body class="bg-(--clr-accent-100) overflow-clip">
     <main
-      class="pl-2 md:pl-8 grid grid-cols-[1.05fr_.95fr] max-h-screen justify-center w-full"
+      class="pl-2 md:pl-8 grid lg:grid-cols-[1.05fr_.95fr] [grid-template-areas:'form_img'] max-h-screen justify-center w-full grid-cols-1"
     >
       <form
         method="post"
-        class="text-white flex flex-col pt-[9.5vh] gap-12 items-center"
+        class="text-white flex flex-col pt-[9.5vh] [grid-area:form] gap-12 items-center"
       >
-        <legend class="text-[2.6rem] text-center mb-[4.5rem]">Create account</legend>
-        <div class="relative">
+        <legend class="text-[2.6rem] text-center mb-18 ch">Welcome Back</legend>
+
+        <div class="relative ch">
           <label
-            for="name"
-            class="absolute"
-            >name</label
-          >
-          <input
-            type="text"
-            id="name"
-            minlength="2"
-            autocomplete="name"
-            aria-autocomplete="both"
-            required
-            placeholder="h"
-          />
-        </div>
-        <div class="relative">
-          <label
-            for="email"
+            for="email1"
             class="absolute"
             >email</label
           >
           <input
             type="email"
-            id="email"
+            id="email1"
             autocomplete="email"
             aria-autocomplete="both"
             required
             placeholder="h"
           />
         </div>
-        <div class="relative">
+
+        <div class="relative ch">
           <label
-            for="pass"
+            for="pass1"
             class="absolute"
             >password</label
           ><input
             type="password"
-            id="pass"
+            id="pass1"
             autocomplete="new-password"
             aria-autocomplete="both"
             minlength="8"
             required
             placeholder="h"
           />
-          <div class="show-pass grid [grid-template-areas:'stack'] absolute right-0 top-[45%] -translate-y-[50%] w-fit *:[grid-area:stack] cursor-pointer">
+          <div
+            class="show-pass grid [grid-template-areas:'stack'] absolute right-0 top-[45%] translate-y-[-50%] max-w-fit *:[grid-area:stack] cursor-pointer"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="20px"
@@ -120,16 +107,127 @@
             </svg>
           </div>
         </div>
-        <div class="grid gap-6 w-[305px]">
-          <button class="create-acc transition-colors hover:bg-gray-500/30 font-medium py-3 px-16 bg-[var(--clr-accent-200)] rounded-full">Create Account</button>
 
-          <div class="flex items-center w-full text-center text-white/80">
+        <div class="grid gap-5 w-76.25">
+          <button
+            class="sign-in-act font-medium transition-colors hover:bg-gray-500/30 py-3 px-16 bg-(--clr-accent-200) rounded-full cursor-pointer ch"
+          >
+            Sign In
+          </button>
+
+          <div class="flex items-center w-full text-center text-white/80 ch">
             <span class="h-px bg-white/40 flex-1"></span>
             <span class="px-3">or</span>
             <span class="h-px bg-white/40 flex-1"></span>
           </div>
 
-          <button class="sign-in font-medium py-3 px-16 bg-[var(--clr-accent-400)] rounded-full text-black">
+          <button
+            type="button"
+            class="create-acc-ch bg-(--clr-accent-400) rounded-full cursor-pointer transition-colors hover:brightness-50 ch py-3 px-16 text-black"
+          >
+            Create Account
+          </button>
+        </div>
+      </form>
+      <!-- Second Form -->
+      <form
+        method="post"
+        class="text-white flex flex-col pt-[9.5vh] [grid-area:form] gap-12 items-center active-form"
+      >
+        <legend class="text-[2.6rem] text-center mb-18 ch">
+          Create account
+        </legend>
+        <div class="relative ch">
+          <label
+            for="name"
+            class="absolute"
+            >name</label
+          >
+          <input
+            type="text"
+            id="name"
+            minlength="2"
+            autocomplete="name"
+            aria-autocomplete="both"
+            required
+            placeholder="h"
+          />
+        </div>
+        <div class="relative ch">
+          <label
+            for="email"
+            class="absolute"
+            >email</label
+          >
+          <input
+            type="email"
+            id="email"
+            autocomplete="email"
+            aria-autocomplete="both"
+            required
+            placeholder="h"
+          />
+        </div>
+        <div class="relative ch">
+          <label
+            for="pass"
+            class="absolute"
+            >password</label
+          ><input
+            type="password"
+            id="pass"
+            autocomplete="new-password"
+            aria-autocomplete="both"
+            minlength="8"
+            required
+            placeholder="h"
+          />
+          <div
+            class="show-pass grid [grid-template-areas:'stack'] absolute right-0 top-[45%] translate-y-[-50%] max-w-fit *:[grid-area:stack] cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="20px"
+              viewBox="0 -960 960 960"
+              class="[div.active_>_&]:opacity-0 transition-opacity"
+              width="20px"
+              fill="#FFFFFF"
+            >
+              <path
+                d="M607.5-372.5Q660-425 660-500t-52.5-127.5Q555-680 480-680t-127.5 52.5Q300-575 300-500t52.5 127.5Q405-320 480-320t127.5-52.5Zm-204-51Q372-455 372-500t31.5-76.5Q435-608 480-608t76.5 31.5Q588-545 588-500t-31.5 76.5Q525-392 480-392t-76.5-31.5ZM214-281.5Q94-363 40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200q-146 0-266-81.5ZM480-500Zm207.5 160.5Q782-399 832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280q113 0 207.5-59.5Z"
+              />
+            </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="20px"
+              viewBox="0 -960 960 960"
+              width="20px"
+              class="opacity-0 [div.active_>_&]:opacity-100 transition-opacity"
+              fill="#FFFFFF"
+            >
+              <path
+                d="m644-428-58-58q9-47-27-88t-93-32l-58-58q17-8 34.5-12t37.5-4q75 0 127.5 52.5T660-500q0 20-4 37.5T644-428Zm128 126-58-56q38-29 67.5-63.5T832-500q-50-101-143.5-160.5T480-720q-29 0-57 4t-55 12l-62-62q41-17 84-25.5t90-8.5q151 0 269 83.5T920-500q-23 59-60.5 109.5T772-302Zm20 246L624-222q-35 11-70.5 16.5T480-200q-151 0-269-83.5T40-500q21-53 53-98.5t73-81.5L56-792l56-56 736 736-56 56ZM222-624q-29 26-53 57t-41 67q50 101 143.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="grid gap-5 w-76.25">
+          <button
+            class="create-acc-act transition-colors hover:bg-gray-500/30 font-medium py-3 px-16 bg-(--clr-accent-200) rounded-full cursor-pointer ch"
+          >
+            Create Account
+          </button>
+
+          <div class="flex items-center w-full text-center text-white/80 ch">
+            <span class="h-px bg-white/40 flex-1"></span>
+            <span class="px-3">or</span>
+            <span class="h-px bg-white/40 flex-1"></span>
+          </div>
+
+          <button
+            type="button"
+            class="sign-in-ch font-medium py-3 px-16 bg-(--clr-accent-400) rounded-full text-black cursor-pointer ch transition-colors hover:brightness-75"
+          >
             Sign In
           </button>
         </div>
@@ -138,12 +236,59 @@
         src="images/side-img.jpeg"
         alt="img"
         draggable="false"
-        class="rounded-xl h-[100vh] object-cover w-full"
+        class="rounded-xl hidden lg:block h-screen object-cover w-full [grid-area:img]"
         width="400"
         height="500"
       />
     </main>
 
-    <script src="js/sign-in.js" type="module" defer></script>
+    <dialog
+      id="dia"
+      class="[[open]]:grid [[open]]:animate-[appear_.3s] bg-(--clr-accent-200) text-white top-[50%] mx-[50%] -translate-x-[50%] -translate-y-[50%] p-9 rounded-lg gap-3 backdrop:bg-black/20 min-w-[min(33rem,max(310px,55%))]"
+    >
+      <button
+        onclick="dia.close()"
+        class="close justify-self-end cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#FFFFFF"
+        >
+          <path
+            d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+          />
+        </svg>
+      </button>
+      <span class="text-gray-300 text-xs text-center"
+        >Sent To: <span class="sent-to"></span
+      ></span>
+      <label class="text-center text-[1.025rem]"
+        >We Have Sent You OTP Code To Your Email. Please Insert It Here.</label
+      >
+      <input
+        type="text"
+        required
+        class="rounded-md p-2 bg-white text-black my-5"
+        minlength="8"
+      />
+      <input
+        type="submit"
+        value="Confirm"
+        class="p-2 rounded-full cursor-pointer bg-lime-500"
+      />
+    </dialog>
+
+    <script
+      src="js/sign-in.js"
+      type="module"
+      defer
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+      defer
+    ></script>
   </body>
 </html>
