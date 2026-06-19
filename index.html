@@ -37,15 +37,14 @@
       rel="icon"
       href="images/logo.svg"
     />
-    <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="min-h-dvh bg-[#091413] text-white">
-    <header class="fixed inset-[0_0_auto_0] bg-[var(--clr-accent-200)]">
+    <header class="fixed inset-[0_0_auto_0] bg-(--clr-accent-200)">
       <div
-        class="container flex px-2 lg:px-6 py-6 justify-center max-w-[1700px] mx-auto"
+        class="container flex px-2 lg:px-6 py-6 justify-center max-w-[1700px] mx-auto gap-6 items-center"
       >
         <h1
-          class="text-2xl flex gap-2 font-bold text-[var(--clr-accent-400)] cursor-pointer items-center me-auto animate-[bright_3s_infinite_alternate]"
+          class="text-2xl flex gap-2 font-bold text-(--clr-accent-400) cursor-pointer items-center me-auto animate-[bright_3s_infinite_alternate] max-w-fit"
         >
           <img
             src="images/logo.svg"
@@ -56,10 +55,14 @@
           Trello Clone
         </h1>
 
-        <div class="boards grid relative">
-          <div class="flex gap-4">
+        <div class="boards grid relative max-w-fit">
+          <button class="menu-toggler sm:hidden flex items-center gap-1 [&.active_svg]:rotate-180">
+            Boards
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
+          </button>
+          <div class="hidden gap-4 *:cursor-pointer sm:flex">
             <button
-              class="toggle-boards tracking-wide flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [div:has(+_.active)_>_&]:outline outline-4 outline-gray-500 [div:has(+_.active)_>_&]:bg-zinc-300/20 [div:has(+_.active)_>_&_svg]:rotate-[180deg]"
+              class="toggle-boards tracking-wide flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [div:has(+_.active)_>_&]:outline [div:has(+_.active)_>_&]:outline-4 outline-gray-500 [div:has(+_.active)_>_&]:bg-zinc-300/20 [div:has(+_.active)_>_&_svg]:rotate-[180deg]"
             >
               Boards
               <svg
@@ -76,7 +79,7 @@
               </svg>
             </button>
             <button
-              class="add-board flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [&:has(+_.active)]:outline outline-4"
+              class="add-board flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [&:has(+_.active)]:outline [&:has(+_.active)]:outline-4 [&:has(+_.active)]:outline-gray-500"
             >
               Add New Board
               <svg
@@ -93,28 +96,30 @@
             </button>
           </div>
           <ul
-            class="board-list absolute scale-y-0 transition-transform origin-top [&.active]:scale-y-100 duration-100 left-0 top-[115%] rounded-md bg-zinc-500 min-h-12 grid *:p-3 p-1 *:cursor-pointer *:w-56 *:transition-colors [&_>_*:hover]:text-gray-300 *:flex *:justify-between z-10"
-          ></ul>
+            class="board-list absolute scale-y-0 transition-transform origin-top [&.active]:scale-y-100 duration-100 left-0 top-[115%] rounded-md bg-zinc-500 min-h-12 grid *:p-3 p-1 *:cursor-pointer *:w-56 *:transition-colors [&_>_*:not(.no-boards):hover]:hover:bg-zinc-300/20 *:flex *:justify-between z-10 *:rounded-md"
+          >
+            <li class="no-boards">No boards to show.</li>
+          </ul>
         </div>
 
         <div class="account relative ms-auto">
           <div
-            class="profile-icon aspect-square w-12 rounded-[50%] bg-purple-600 flex place-items-center justify-center cursor-pointer [&:has(+_.active)]:outline outline-4 uppercase outline-gray-500 outline-offset-1"
+            class="profile-icon aspect-square w-12 rounded-[50%] bg-purple-600 flex place-items-center justify-center cursor-pointer [&:has(+_.active)]:outline [&:has(+_.active)]:outline-4 [&:has(+_.active)]:outline-gray-500 [&:has(+_.active)]:outline-offset-1 uppercase"
           >
             J
           </div>
           <ul
             class="profile absolute top-[113%] right-0 rounded-md p-2 bg-zinc-500 grid *:py-4 *:px-2 *:font-medium transition-transform scale-y-0 [&.active]:scale-y-100 origin-top z-20 min-w-max *:transition-colors *:rounded-md [&_>_*:hover]:bg-zinc-300/20 *:cursor-pointer"
           >
-            <li>Edit personal details</li>
-            <li>Change password</li>
-            <li class="flex items-center justify-between text-rose-200">
+            <li class="edit" >Edit personal details</li>
+            <li class="dashboard">Dashboard</li>
+            <li class="logout flex items-center justify-between text-rose-300">
               Logout
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="24px"
                 viewBox="0 -960 960 960"
-                class="fill-rose-200"
+                class="fill-rose-300"
                 width="24px"
               >
                 <path
@@ -127,35 +132,37 @@
       </div>
     </header>
 
-    <main class="grid gap-6 px-2 lg:px-6 pb-6 pt-[9rem]">
-      <h2 class="text-lg">Board: <span class="current-board-name"></span></h2>
-      <div class="main-content grid gap-6"></div>
+    <main class="grid gap-6 px-2 lg:px-4 pb-6 pt-36">
+      <h2 class="text-lg ms-3 -z-10 relative">
+        Board:
+        <span class="ml-2 font-bold text-purple-400 current-board-name"></span>
+      </h2>
+      <div class="main-content grid flex-row gap-6 justify-center"></div>
 
       <button
-        class="no-acc p-3 bg-[var(--clr-accent-300)] max-w-fit justify-self-center rounded-md"
-        style="display: none;"
-        onclick="window.location.href = './sign-in.html'"
+        class="no-acc p-3 bg-(--clr-accent-300) max-w-fit justify-self-center rounded-md cursor-pointer"
+        style="display: none"
+        onclick="window.location.href = './sign-in.html?act=cr'"
       >
-        Please Sign Up To Save Your Trello
+        Please sign up to save your trello
       </button>
     </main>
 
     <dialog
-      class="fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] bg-[var(--clr-accent-300)] p-4 [&[open]]:grid border border-zinc-400/20 rounded-md"
+      class="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-(--clr-accent-300) p-4 [[open]]:grid border border-zinc-400/20 rounded-md"
     >
       <!-- Update Cards Details Or Create Ones -->
       <form
         action=""
         method="dialog"
       >
-        <label for="name">Name</label>
+        
       </form>
     </dialog>
 
     <script
       src="js/script.js"
       type="module"
-      defer
     ></script>
   </body>
 </html>
