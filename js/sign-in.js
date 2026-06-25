@@ -95,8 +95,8 @@ document.body.addEventListener('click', e => {
 signInBtn.addEventListener('click', e => {
   e.preventDefault();
 
-  const passInp = document.querySelector('.active-form [type="password"]'),
-    emailInp = document.querySelector('.active-form [type="email"]');
+  const passInp = document.querySelector('#pass1'),
+    emailInp = document.querySelector('#email1');
 
   if (!emailInp.value) showErr('Please Enter Your Email');
   else if (passInp.value < 8) showErr('The password should be at least 8 characters long');
@@ -138,6 +138,7 @@ createAccBtn.addEventListener('click', e => {
   else if (/\W/.test(nameInp.value)) showErr('The Name Contains Invalid Characters');
   else if (!emailPattern.test(emailInp.value)) showErr('Invalid Email');
   else if (passInp.value.length < 8) showErr('The Password Is Too Short');
+  else if (usersFile.users.usersData.find(user => user.email === emailInp.value)) showErr('Account With Same Email Already Exists!')
   else {
     const email = emailInp.value,
       name = nameInp.value,
@@ -202,7 +203,7 @@ submitOtpBtn.addEventListener('click', () => {
   }
 });
 
-function showErr(msg) {
+export default function showErr(msg) {
   const oldErrDiv = document.querySelector('.err');
   if (oldErrDiv) return;
   const errDiv = document.createElement('div');
