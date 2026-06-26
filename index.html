@@ -38,13 +38,13 @@
       href="images/logo.svg"
     />
   </head>
-  <body class="min-h-dvh bg-[#091413] text-white">
-    <header class="fixed inset-[0_0_auto_0] bg-(--clr-accent-200)">
+  <body class="bg-[#091413] text-white overflow-x-hidden">
+    <header class="fixed inset-[0_0_auto_0] bg-(--clr-accent-200) z-100000">
       <div
         class="container flex px-2 lg:px-6 py-6 justify-center max-w-[1700px] mx-auto gap-6 items-center"
       >
         <h1
-          class="text-2xl flex gap-2 font-bold text-(--clr-accent-400) cursor-pointer items-center me-auto animate-[bright_3s_infinite_alternate] max-w-fit"
+          class="text-2xl flex gap-2 font-bold text-(--clr-accent-400) cursor-pointer items-center me-auto animate-[bright_6s_infinite_alternate] max-w-fit"
         >
           <img
             src="images/logo.svg"
@@ -62,7 +62,7 @@
           </button>
           <div class="hidden gap-4 *:cursor-pointer sm:flex">
             <button
-              class="toggle-boards tracking-wide flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [div:has(+_.active)_>_&]:outline [div:has(+_.active)_>_&]:outline-4 outline-gray-500 [div:has(+_.active)_>_&]:bg-zinc-300/20 [div:has(+_.active)_>_&_svg]:rotate-[180deg]"
+              class="toggle-boards tracking-wide flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [div:has(+_.active)_>_&]:outline-4 outline-gray-500 [div:has(+_.active)_>_&]:bg-zinc-300/20 [div:has(+_.active)_>_&_svg]:rotate-180"
             >
               Boards
               <svg
@@ -79,7 +79,7 @@
               </svg>
             </button>
             <button
-              class="add-board flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [&:has(+_.active)]:outline [&:has(+_.active)]:outline-4 [&:has(+_.active)]:outline-gray-500"
+              class="add-board flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [&:has(+_.active)]:outline-4 [&:has(+_.active)]:outline-gray-500/50"
             >
               Add New Board
               <svg
@@ -96,7 +96,7 @@
             </button>
           </div>
           <ul
-            class="board-list absolute scale-y-0 transition-transform origin-top [&.active]:scale-y-100 duration-100 left-0 top-[115%] rounded-md bg-zinc-500 min-h-12 grid *:p-3 p-1 *:cursor-pointer *:w-56 *:transition-colors [&_>_*:not(.no-boards):hover]:hover:bg-zinc-300/20 *:flex *:justify-between z-10 *:rounded-md"
+            class="board-list absolute scale-y-0 transition-transform origin-top [&.active]:scale-y-100 duration-100 left-0 top-[115%] rounded-md bg-zinc-500/30 border border-zinc-500/70 min-h-12 grid *:p-3 *:cursor-pointer *:w-56 *:transition-colors [&_>_*:not(.no-boards):hover]:hover:bg-zinc-300/20 *:flex *:justify-between z-50 *:rounded-md backdrop-blur-lg"
           >
             <li class="no-boards">No boards to show.</li>
           </ul>
@@ -104,12 +104,12 @@
 
         <div class="account relative ms-auto">
           <div
-            class="profile-icon aspect-square w-12 rounded-[50%] bg-purple-600 flex place-items-center justify-center cursor-pointer [&:has(+_.active)]:outline [&:has(+_.active)]:outline-4 [&:has(+_.active)]:outline-gray-500 [&:has(+_.active)]:outline-offset-1 uppercase"
+            class="profile-icon aspect-square w-12 rounded-[50%] bg-purple-600 flex place-items-center justify-center cursor-pointer [&:has(+_.active)]:outline-4 [&:has(+_.active)]:outline-gray-500/60 [&:has(+_.active)]:outline-offset-1 uppercase"
           >
             J
           </div>
           <ul
-            class="profile absolute top-[113%] right-0 rounded-md p-2 bg-zinc-500 grid *:py-4 *:px-2 *:font-medium transition-transform scale-y-0 [&.active]:scale-y-100 origin-top z-20 min-w-max *:transition-colors *:rounded-md [&_>_*:hover]:bg-zinc-300/20 *:cursor-pointer"
+            class="profile absolute top-[113%] right-0 rounded-md bg-zinc-500/30 border border-zinc-500/70 backdrop-blur-lg grid *:py-4 *:px-3 *:font-medium transition-transform scale-y-0 [&.active]:scale-y-100 origin-top [&.active]:z-50 min-w-max *:transition-colors *:rounded-md [&_>_*:hover]:bg-zinc-300/20 *:cursor-pointer *:text-sm"
           >
             <li class="edit" >Edit personal details</li>
             <li class="dashboard">Dashboard</li>
@@ -132,12 +132,12 @@
       </div>
     </header>
 
-    <main class="grid gap-6 px-2 lg:px-4 pb-6 pt-36">
+    <main class="grid gap-6 px-2 lg:px-4 pb-6 pt-36 overflow-x-clip">
       <h2 class="text-lg ms-3 -z-10 relative">
         Board:
         <span class="ml-2 font-bold text-purple-400 current-board-name"></span>
       </h2>
-      <div class="main-content grid flex-row gap-6 justify-center"></div>
+      <div class="main-content grid gap-6 justify-center"></div>
 
       <button
         class="no-acc p-3 bg-(--clr-accent-300) max-w-fit justify-self-center rounded-md cursor-pointer"
@@ -149,19 +149,89 @@
     </main>
 
     <dialog
-      class="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-(--clr-accent-300) p-4 [[open]]:grid border border-zinc-400/20 rounded-md"
+      id="addingBoard"
+      class="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-(--clr-accent-100) transition-transform scale-50 [[open]]:scale-100 duration-300 p-6 [[open]]:grid border border-zinc-400/20 rounded-2xl shadow-2xl w-[min(90vw,420px)] backdrop:backdrop-blur-xl animate-[appear_.3s]"
     >
-      <!-- Update Cards Details Or Create Ones -->
       <form
+        class="grid gap-5"
         action=""
         method="dialog"
       >
-        
+        <div class="grid gap-1 [*]:items-center">
+          <div class="text-sm font-semibold uppercase tracking-[0.2em] text-purple-200">New board</div>
+          <h2 class="text-2xl leading-[normal] font-bold text-white text-center">Add board</h2>
+          <p class="text-sm leading-6 text-zinc-300">Enter the board name and optional sections. If you add any section names, default sections will be disabled.</p>
+        </div>
+
+        <label class="grid gap-2 text-sm leading-[normal] text-zinc-200">
+          <span class="font-medium">Board Name</span>
+          <input
+            id="board-name"
+            name="boardName"
+            type="text"
+            required
+            class="w-full rounded-2xl border border-zinc-700 bg-zinc-950/80 px-4 py-3 text-white outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
+            placeholder="Example: Project roadmap"
+          />
+        </label>
+
+        <div class="grid gap-3">
+          <div class="flex items-center justify-between gap-3">
+            <div class="text-sm font-medium text-zinc-200 leading-[normal]">Section names</div>
+            <button
+              id="add-section-field"
+              type="button"
+              class="add-field inline-flex items-center gap-2 rounded-full bg-purple-600 px-3 py-2 text-sm font-semibold text-white transition leading-[normal] hover:bg-purple-500"
+            >
+              <span class="text-xl">+</span>
+              Add field
+            </button>
+          </div>
+
+          <div id="section-fields" class="grid gap-2 max-h-[10ch] overflow-auto">
+            <div class="flex items-center gap-2">
+              <input
+                name="section"
+                type="text"
+                class="flex-1 rounded-2xl border border-zinc-700 bg-zinc-950/80 px-4 py-3 text-white outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
+                placeholder="Section name (optional)"
+              />
+              <button
+                onclick="this.parentElement.remove()"
+                type="button"
+                class="remove-section h-8 flex items-center justify-center w-8 rounded-full bg-red-600 text-white transition hover:bg-red-500"
+                aria-label="Remove section"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            class="rounded-2xl border border-zinc-700 bg-transparent px-4 leading-[normal] py-3 text-sm font-medium text-zinc-200 transition hover:bg-white/5"
+            onclick="document.getElementById('addingBoard').close()"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="submit-board rounded-2xl bg-purple-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-purple-500 leading-[normal]"
+          >
+            Create board
+          </button>
+        </div>
       </form>
     </dialog>
 
     <script
       src="js/script.js"
+      type="module"
+    ></script>
+    <script
+      src="js/drag-drop.js"
       type="module"
     ></script>
   </body>

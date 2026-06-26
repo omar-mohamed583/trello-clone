@@ -1,4 +1,4 @@
-import { boards as boardsData, users, saveBoard, saveUser, changeSectionsOrder, changeNodeOrderInSameSec, changeNodeSec } from "./boards.js";
+import { boards as boardsData, users, saveBoard, saveUser } from "./boards.js";
 import { addNode, addSection, addBoard, addUser } from "./boards.js";
 import { deleteBoard, deleteNode, deleteSection, deleteUser } from "./boards.js";
 import { getBoard, getNode, getSection, getUser } from "./boards.js";
@@ -13,21 +13,21 @@ const boards = document.querySelector('.boards'),
   h2 = document.querySelector('h2'),
   currentBoardName = document.querySelector('.current-board-name'),
   noAccBtn = document.querySelector('.no-acc'),
-  logout = document.querySelector('.logout');
+  logout = document.querySelector('.logout'),
+  addBoardBtn = document.querySelector('.add-board');
 
 
 
-let activeBoardId;
+let activeBoardId = users.activeBoardId;
 window.onload = () => {
   if (users.activeUserId !== null) {
 
-    activeBoardId = users.activeBoardId;
     profileBtn.textContent = users.usersData[users.activeUserId]?.userName[0];
 
     if (activeBoardId !== null) {
 
       showSkeletonLoading(loadContent, users.activeUserId, activeBoardId)
-      const boardName = boardsData.boardsData[activeBoardId]?.title ?? null;
+      const boardName = getBoard(activeBoardId)?.title ?? null;
 
       if (boardName)
         currentBoardName.textContent = boardName;
@@ -63,51 +63,198 @@ document.body.addEventListener('click', e => {
 
   // Delete Board
   else if (e.target.classList.contains('delete-board') || e.target.closest('.delete-board')) {
-    const boardItem = e.target.closest('.boardItem'),
-    {boardId} = e.target.closest('.boardItem').dataset;
+    e.stopPropagation();
 
-    deleteBoard(boardId);
+    const boardItem = e.target.closest('.boardItem'),
+    {boardId} = boardItem.dataset,
+    currentActiveBoardId = users.activeBoardId;
+
+    deleteBoard(+boardId);
     boardsList.classList.remove('active');
     boardItem.remove();
 
-    if (users.activeBoardId === boardId) {
-      user.activeBoardId = null;
+    if (currentActiveBoardId === +boardId) {
+
+      const anotherUserBoard = boardsData.boardsData.find(board => board.userId === users.activeUserId);
+      console.log('another', anotherUserBoard)
+
+      if (anotherUserBoard) {
+        users.activeBoardId = anotherUserBoard.boardId;
+        activeBoardId = anotherUserBoard.boardId;
+        displayBoard(anotherUserBoard.boardId, anotherUserBoard);
+        currentBoardName.textContent = anotherUserBoard.title;
+
+      } else {
+
+        mainContainer.innerHTML = '<p class="justify-self-center">No boards to show, please add one.</p>';
+        console.log('no another');
+        currentBoardName.textContent = '';
+        users.activeBoardId = null;
+        activeBoardId = null;
+      }
+
       saveUser();
     }
 
-    if (!boards.boardsCount) {
+    if (!boardsData.boardsData.length) {
+      console.log('didn\'t found another board');
       boardsList.innerHTML = '<li class="no-boards cursor-auto">No boards to show.</li>';
       mainContainer.innerHTML = '<p class="justify-self-center">No boards to show, please add one.</p>';
-      h2.style.display = 'none';
     }
   }
 
   // Rename
-  
+  else if (e.target.classList.contains('rename-board') || e.target.closest('.rename-board')) {
+    console.log('edit')
+    const boardItem = e.target.closest('.boardItem'),
+    {boardId} = boardItem.dataset,
+    boardName = boardItem.querySelector('.truncate');
+
+    document.querySelector('.tooltip.active').classList.toggle('active');
+    boardName.contentEditable = 'true';
+    boardName.focus();
+
+    boardName.addEventListener('blur', () => {
+      if (/[\p{L}\p{N}\s]+$/gu.test(boardName.textContent)) {
+        const newName = boardName.textContent.trim();
+
+        boardsData.boardsData.find(board => board.boardId === +boardId).title = newName;
+        saveBoard();
+        boardName.contentEditable = 'false';
+        currentBoardName.textContent = newName;
+      } else boardName.focus();
+    });
+
+    boardName.addEventListener('keydown', e => {
+      if ( e.key === "Enter" && /[\p{L}\p{N}\s]+$/gu.test(boardName.textContent)) {
+        const newName = boardName.textContent.trim();
+
+        boardsData.boardsData.find(board => board.boardId === +boardId).title = newName;
+        saveBoard();
+        boardName.contentEditable = 'false';
+
+        currentBoardName.textContent = newName;
+      }
+    });
+  }
+
+  // Open Add Board Dialog
+  else if (e.target === addBoardBtn || e.target.closest('.add-board')) {
+    addingBoard.showModal();
+  }
+
+  // Add Section Name Field
+  else if (e.target.classList.contains('add-field') || e.target.closest('.add-field')) {
+    const sectsFieldsCont = document.getElementById('section-fields'),
+    sectFieldHTML = `<div class="flex items-center gap-2">
+              <input
+                name="section"
+                type="text"
+                class="flex-1 rounded-2xl border border-zinc-700 bg-zinc-950/80 px-4 py-3 text-white outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
+                placeholder="Section name"
+              />
+              <button
+                onclick="this.parentElement.remove()"
+                type="button"
+                class="remove-section h-8 flex items-center justify-center w-8 rounded-full bg-red-600 text-white transition hover:bg-red-500"
+                aria-label="Remove section"
+              >
+                ×
+              </button>`;
+
+    sectsFieldsCont.insertAdjacentHTML('beforeend', sectFieldHTML);
+  }
+
+  // Create Board
+  else if (e.target.classList.contains('submit-board')) {
+    const addedBoardName = document.getElementById('board-name').value,
+    sectionsNames = document.querySelectorAll('input[name="section"]'),
+    namesArray = sectionsNames.length ? Array.from(sectionsNames).map(sect => sect.value) : null;
+    console.log(namesArray)
+
+    if (addedBoardName) {
+      if (namesArray.length > 1 || namesArray[0]) addBoardToMain(addedBoardName, ...namesArray);
+
+      else addBoardToMain(addedBoardName);
+      h2.style.opacity = '1';
+    }
+  }
+
+  // Sections More Options
+  else if (e.target.closest('.more-opt') || e.target.classList.contains('more-opt')) {
+    const sectMoreOpt = e.target.closest('.more-opt') ? e.target.closest('.more-opt') : e.target;
+    sectMoreOpt.nextElementSibling.classList.toggle('active');
+  }
+
+  // rename Sections
+  else if (e.target.classList.contains('rename-section') || e.target.closest('.rename-section')) {
+    const section = e.target.closest('.list'),
+    {sectionId} = section.dataset,
+    sectionName = section.querySelector('.sec-name');
+
+    requestAnimationFrame(() => {
+      sectionName.contentEditable = 'true';
+      sectionName.focus();
+    })
+
+    sectionName.addEventListener('blur', e => {
+      if (/[\p{L}\p{N}\s]+$/gu.test(sectionName.textContent)) {
+        boardsData.boardsData.find(board => board.boardId === activeBoardId).content.find(sect => sect.id === +sectionId).title = sectionName.textContent.trim();
+        sectionName.contentEditable = 'false';
+      }
+    });
+
+    sectionName.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && /[\p{L}\p{N}\s]+$/gu.test(sectionName.textContent)) {
+        boardsData.boardsData.find(board => board.boardId === activeBoardId).content.find(sect => sect.id === +sectionId).title = sectionName.textContent.trim();
+
+        sectionName.contentEditable = 'false';
+      }
+    });
+
+  }
+
+  // Delete Section
+  else if (e.target.classList.contains('delete-section') || e.target.closest('.delete-section')) {
+    const section = e.target.closest('.list'),
+    {sectionId} = section.dataset,
+      sections = document.querySelectorAll('.list');
+
+    deleteSection(activeBoardId, +sectionId);
+    document.startViewTransition(() => section.remove());
+  }
+
+  else if (e.target.classList.contains('')) {
+
+  }
 })
 
+// Open Boards List
 boards.addEventListener('click', e => {
   if (e.target === boardsBtn || e.target.closest('.tracking-wide') === boardsBtn) {
     boardsList.classList.toggle('active');
   }
 });
 
+// Open Profile
 profileBtn.addEventListener('click', () => {
   profileList.classList.toggle('active');
 });
 
+// Board Items Btns
 boardsList.addEventListener('click', e => {
   const boardItem = e.target.closest('.boardItem') ? e.target.closest('.boardItem') : e.target.classList.contains('boardItem') ? e.target : null;
-  if (boardItem) {
+  if (boardItem && (!e.target.classList.contains('delete-board') || !e.target.closest('.delete-board'))) {
 
     if (!(e.target.classList.contains('more-setting') || e.target.closest('.more-setting'))) {
 
       const itemBoardId = +boardItem.dataset.boardId;
+      console.log(`clicked Board ${itemBoardId}`, `active Board: ${activeBoardId}`)
       if (itemBoardId === activeBoardId) return;
       else {
         users.activeBoardId = itemBoardId;
-        saveUser();
         activeBoardId = itemBoardId;
+        saveUser();
         showSkeletonLoading(displayBoard, activeBoardId);
       }
 
@@ -150,18 +297,19 @@ function loadContent(userId, activeBoardId) {
   displayBoardItems(userId, userBoards)
 }
 
-function displayBoard(boardId) {
-  const board = boardsData.boardsData[boardId];
+function displayBoard(boardId, board = '') {
+  if (!board) board = getBoard(boardId);
   let fullMainHTML = '';
 
-  board.content.forEach(sect => {
+  board?.content?.forEach(sect => {
     const defaultMainHTML = `
       <div
-          class="list p-3 max-w-88 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] grid min-h-40 rounded-md border-2 border-green-100/20"
+          draggable="false"
+          class="list p-3 max-w-155 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] grid min-h-40 rounded-md border-2 border-green-100/20 transition-[translate,left,top] duration-200 ease-linear"
           data-section-id="${sect.id}"
         >
           <h3
-            class="flex items-center justify-between cursor-grab border-b border-b-white pb-2 max-h-fit capitalize"
+            class="flex items-center justify-between cursor-grab border-b border-b-white pb-2 max-h-fit capitalize drag relative"
           >
             <div class="flex items-center">
 
@@ -176,7 +324,9 @@ function displayBoard(boardId) {
                   d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z"
                 />
               </svg>
-              ${sect.title}
+              <span class="sec-name">
+                ${sect.title}
+              </span>
             </div>
 
             <button class="more-opt flex items-center cursor-pointer">
@@ -193,8 +343,19 @@ function displayBoard(boardId) {
                 />
               </svg>
             </button>
+
+            <div class="tooltip p-1 grid bg-zinc-600/20 *:cursor-pointer *:p-3 *:transition-colors *:[:hover]:bg-zinc-300/40 min-w-max absolute top-full -right-1 rounded-md transition-transform scale-y-0 [&.active]:scale-y-100 origin-top z-10 backdrop-blur-lg border border-zinc-600/60">
+                    <button class="rename-section flex items-center justify-between gap-1 min-w-30">
+                    Rename
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+                  </button>
+                  <button class="delete-section flex items-center justify-between gap-1 min-w-30">
+                    Delete
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                  </button>
+            </div>
           </h3>
-          <ul class="items p-2">
+          <ul class="trello p-2">
 
           </ul>
           <button
@@ -219,7 +380,7 @@ function displayBoard(boardId) {
 
   fullMainHTML += `
       <button
-        class="add-list flex items-center p-2 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] gap-1 max-h-fit rounded-md border-2 border-green-100/20 justify-center cursor-pointer"
+        class="add-list flex items-center p-2 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] gap-1 max-h-fit rounded-md border-2 border-green-100/20 justify-center cursor-pointer max-w-155"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -233,6 +394,8 @@ function displayBoard(boardId) {
         Add new column
       </button>`;
 
+  console.log(board)
+  currentBoardName.textContent = board?.title;
   mainContainer.innerHTML = fullMainHTML;
 }
 
@@ -247,8 +410,8 @@ function displayBoardItems(userId, boardsDa = '') {
 
   boardsJson.forEach(board => {
     const boardListItem = `
-            <li data-board-id="${board.boardId}" class="boardItem" title="${board.title}">
-              <span class="block max-w-45 truncate self-center">${board.title}</span>
+            <li data-board-id="${board.boardId}" class="boardItem relative" title="${board.title}">
+              <span class="block p-1 max-w-45 truncate self-center">${board.title}</span>
               <button
                 class="*:fill-white relative more-setting"
               >
@@ -265,7 +428,7 @@ function displayBoardItems(userId, boardsDa = '') {
                   />
                 </svg>
                 </button>
-                <div class="tooltip p-1 grid bg-zinc-600 *:cursor-pointer *:p-3 *:transition-colors *:[:hover]:bg-zinc-300/20 min-w-max absolute top-full -right-1 rounded-md transition-transform scale-y-0 [&.active]:scale-y-100 origin-top">
+                <div class="tooltip p-1 grid bg-zinc-600/80 border border-zinc-600/90 backdrop-blur-xl *:cursor-pointer *:p-3 *:transition-colors *:[:hover]:bg-zinc-300/20 min-w-max absolute top-full -right-1 rounded-md transition-transform scale-y-0 [&.active]:scale-y-100 origin-top z-10">
                     <button class="rename-board flex items-center justify-between gap-1 min-w-30">
                     Rename
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
@@ -284,7 +447,7 @@ function displayBoardItems(userId, boardsDa = '') {
 
 function showSkeletonLoading(fn, ...args) {
   const cardHeights = ['h-14', 'h-11', 'h-16'];
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflowY = 'hidden';
 
   const skeletonSection = () => `
     <div class="list p-3 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] grid min-h-40 max-h-fit rounded-md border-2 border-green-100/20">
@@ -310,6 +473,25 @@ function showSkeletonLoading(fn, ...args) {
 
   setTimeout(() => {
     fn(...args);
-    document.body.style.overflow = 'visible';
-  }, 1000)
+    document.body.style.overflowY = 'visible';
+  }, 500)
+}
+
+function addBoardToMain(name, ...sects) {
+  const ID = addBoard(users.activeUserId, name);
+  users.activeBoardId = ID;
+  activeBoardId = ID;
+  saveUser();
+
+  if (sects) {
+    sects.forEach(sectionName => {
+      addSection(ID, sectionName);
+    })
+  }
+
+  noAccBtn.style.display = 'none';
+  mainContainer.innerHTML = '';
+  showSkeletonLoading(displayBoard, ID);
+  displayBoardItems(users.activeUserId);
+  currentBoardName.textContent = name;
 }

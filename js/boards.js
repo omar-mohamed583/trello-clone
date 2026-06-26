@@ -3,6 +3,7 @@ import { users } from "./users.js";
 
 export const boards = JSON.parse(localStorage.getItem('boards')) ?? {
   boardsCount: 0,
+  nextBoardId: 0,
   sectionsCount: 0,
   nodesCount: 0,
   boardsData: [
@@ -33,12 +34,34 @@ export const boards = JSON.parse(localStorage.getItem('boards')) ?? {
   ]
 }
 
+if (boards.nextBoardId === undefined) {
+  boards.nextBoardId = boards.boardsData.length
+    ? Math.max(...boards.boardsData.map(board => board.boardId)) + 1
+    : 0;
+}
+
+if (boards.boardsCount === undefined) {
+  boards.boardsCount = boards.boardsData.length;
+}
+
+function getBoardIndex(boardId) {
+  return boards.boardsData.findIndex(board => board.boardId === boardId);
+}
+
+function getBoardById(boardId) {
+  const index = getBoardIndex(boardId);
+  return index === -1 ? null : boards.boardsData[index];
+}
+
 export function addNode(boardId, sectionId, title, priority = 'low', desc = '', dueDate = '', tags = '') {
-  const section = boards.boardsData[boardId].content.find(sec => sec.id === sectionId);
+  const boardIndex = getBoardIndex(boardId);
+  const section = boards.boardsData[boardIndex]?.content.find(sec => sec.id === sectionId);
+  if (!section) return null;
+
   section.nodes.push({
-    nodeId: boards.nodesCount,
+    nodeId: boards.nodesCount++,
     sectionId,
-    order: boards.nodesCount++,
+    order: section.nodes.length + 1,
     title,
     description: desc,
     priority,
@@ -46,129 +69,163 @@ export function addNode(boardId, sectionId, title, priority = 'low', desc = '', 
     tags
   });
   saveBoard();
+  return --boards.nodesCount;
 }
 
 export function deleteNode(boardId, sectionId, nodeId) {
-  const section = boards.boardsData[boardId].content.find(sec => sec.id === sectionId);
-  section.nodes.filter(node => node.nodeId !== nodeId);
+  const boardIndex = getBoardIndex(boardId);
+  const section = boards.boardsData[boardIndex]?.content.find(sec => sec.id === sectionId);
+  if (!section) return;
+
+  section.nodes = section.nodes.filter(node => node.nodeId !== nodeId);
   boards.nodesCount--;
   saveBoard();
 }
 
 export function getNode(boardId, sectionId, nodeId) {
-  const section = boards.boardsData[boardId].content.find(sec => sec.id === sectionId);
-  return section.nodes.find(node => node.nodeId === nodeId);
+  const boardIndex = getBoardIndex(boardId);
+  const section = boards.boardsData[boardIndex]?.content.find(sec => sec.id === sectionId);
+  return section?.nodes.find(node => node.nodeId === nodeId);
 }
 
 export function changeNodeOrderInSameSec(boardId, sectionId, replacedNodeId, replacedByNodeId) {
+  const boardIndex = getBoardIndex(boardId);
+  const section = boards.boardsData[boardIndex]?.content.find(sec => sec.id === sectionId);
+  if (!section) return;
+
   let replacedByIndex, replacedIndex, replacedByNode, replacedNode;
-  const section = boards.boardsData[boardId].content.find(sec => sec.id === sectionId),
-  placeHolder = replacedByNode.order;
 
   section.nodes.forEach((node, ind) => {
     if (replacedByNode && replacedNode) return;
     else if (node.nodeId === replacedByNodeId) {
       replacedByIndex = ind;
       replacedByNode = node;
-    } else if (node.id === replacedNodeId) {
+    } else if (node.nodeId === replacedNodeId) {
       replacedIndex = ind;
       replacedNode = node;
     }
-  })
+  });
 
-  // Change order property
+  if (!replacedByNode || !replacedNode) return;
+
+  const placeHolder = replacedByNode.order;
   replacedByNode.order = replacedNode.order;
   replacedNode.order = placeHolder;
 
-  // Change Real Positions In Array
   section.nodes.splice(replacedByIndex, 1, replacedNode);
   section.nodes.splice(replacedIndex, 1, replacedByNode);
 }
 
 export function changeNodeSec(boardId, oldSecId, newSecId, nodeId) {
-  let oldSection, newSection;
-  boards.boardsData[boardId].content.forEach(sec => {
-    if (oldSection && newSection) return;
-    else if (sec.id === oldSecId) oldSection = sec;
-    else if (sec.id === newSecId) newSection = sec;
-  });
-  const draggedNode = oldSection.find(node => node.id === nodeId)
+  const boardIndex = getBoardIndex(boardId);
+  const board = boards.boardsData[boardIndex];
+  if (!board) return;
 
-  // Remove Node From The Old Section
-  oldSection.nodes.filter(node => node !== draggedNode);
-  newSection.push(draggedNode);
+  const oldSection = board.content.find(sec => sec.id === oldSecId);
+  const newSection = board.content.find(sec => sec.id === newSecId);
+  if (!oldSection || !newSection) return;
+
+  const draggedNode = oldSection.nodes.find(node => node.nodeId === nodeId);
+  if (!draggedNode) return;
+
+  oldSection.nodes = oldSection.nodes.filter(node => node.nodeId !== nodeId);
+  newSection.nodes.push(draggedNode);
 }
 
 export function addSection(boardId, title) {
-  boards.boardsData[boardId].content.push({
+  const boardIndex = getBoardIndex(boardId);
+  const board = boards.boardsData[boardIndex];
+  if (!board) return null;
+
+  board.content.push({
     title,
-    id: boards.sectionsCount,
-    order: boards.sectionsCount++,
+    id: boards.sectionsCount++,
+    order: board.content.length + 1,
     nodes: []
   });
   saveBoard();
+  return boards.sectionsCount - 1;
 }
 
 export function deleteSection(boardId, sectionId) {
-  const sectionIndex = boards.boardsData[boardId].content.forEach((sec, ind) =>{
-    if (sec.id === sectionId) return ind;
-  });
-  boards.boardsData[boardId].content.splice(sectionIndex, 1);
+  const boardIndex = getBoardIndex(boardId);
+  const board = boards.boardsData[boardIndex];
+  if (!board) return;
+
+  const sectionIndex = board.content.findIndex(sec => sec.id === sectionId);
+  if (sectionIndex === -1) return;
+
+  boards.nodesCount -= board.content[sectionIndex].nodes.length;
+  board.content.splice(sectionIndex, 1);
   boards.sectionsCount--;
   saveBoard();
 }
 
 export function getSection(boardId, sectionId) {
-  return boards.boardsData[boardId].content.find(sec => sec.id === sectionId);
+  const boardIndex = getBoardIndex(boardId);
+  const board = boards.boardsData[boardIndex];
+  return board?.content.find(sec => sec.id === sectionId);
 }
 
 export function changeSectionsOrder(boardId, replacedSectionId, replacedBySectionId) {
-  let replacedByIndex, replacedIndex, replacedBySec, replacedSec;
-  const placeHolder = replacedBySec.order;
+  const boardIndex = getBoardIndex(boardId),
+    board = getBoardById(boardId)
+  if (!board) return console.log('No Board From Change Sections.');
 
-  boards.boardsData[boardId].content.forEach((sec, ind) => {
+  let replacedByIndex, replacedIndex, replacedBySec, replacedSec;
+
+  board.content.forEach((sec, ind) => {
     if (replacedBySec && replacedSec) return;
-    else if (sec.id === replacedBySectionId) {
+    else if (sec.id === +replacedBySectionId) {
       replacedByIndex = ind;
       replacedBySec = sec;
-    } else if (sec.id === replacedSectionId) {
+    } else if (sec.id === +replacedSectionId) {
       replacedIndex = ind;
       replacedSec = sec;
     }
   });
 
-  // Change order property
+  if (!replacedBySec || !replacedSec) return console.log('no Sect From Ch Sections');
+
+  const placeHolder = replacedBySec.order;
   replacedBySec.order = replacedSec.order;
   replacedSec.order = placeHolder;
 
-  // Change Real Positions In Array
-  boards.boardsData[boardId].content.splice(replacedByIndex, 1, replacedSec);
-  boards.boardsData[boardId].content.splice(replacedIndex, 1, replacedBySec);
+  board.content.splice(replacedByIndex, 1, replacedSec);
+  board.content.splice(replacedIndex, 1, replacedBySec);
   saveBoard();
 }
 
 export function addBoard(userId, title) {
+  const boardId = boards.nextBoardId++;
+  boards.boardsCount++;
   boards.boardsData.unshift({
     userId,
-    boardId: boards.boardsCount,
+    boardId,
     title,
     content: []
   });
   saveBoard();
-  addSection(boards.boardsCount, 'Todo');
-  addSection(boards.boardsCount, 'In Progress');
-  addSection(boards.boardsCount++, 'Done');
+  addSection(boardId, 'Todo');
+  addSection(boardId, 'In Progress');
+  addSection(boardId, 'Done');
+  return boardId;
 }
 
 export function deleteBoard(boardsId) {
-  boards.boardsData.splice(boardsId, 1);
+  const boardIndex = getBoardIndex(boardsId);
+  if (boardIndex === -1) return console.log('board not found To Delete');
+
+  const sectionsCount = boards.boardsData.find(board => board.boardId === boardsId).content.length;
+  boards.sectionsCount -= sectionsCount;
+  boards.boardsData.splice(boardIndex, 1);
   boards.boardsCount--;
-  if (users.activeBoardId === boardsId) users.activeBoardId = null;
+  if (users.activeBoardId === +boardsId) users.activeBoardId = null;
   saveBoard();
 }
 
 export function getBoard(boardId) {
-  return boards.boardsData[boardId];
+  return getBoardById(boardId);
 }
 
 export function saveBoard() {
