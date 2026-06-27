@@ -53,7 +53,7 @@ function getBoardById(boardId) {
   return index === -1 ? null : boards.boardsData[index];
 }
 
-export function addNode(boardId, sectionId, title, priority = 'low', desc = '', dueDate = '', tags = '') {
+export function addNode(boardId, sectionId, title, priority = 'low', desc = '', dueDate = '', ...tags) {
   const boardIndex = getBoardIndex(boardId);
   const section = boards.boardsData[boardIndex]?.content.find(sec => sec.id === sectionId);
   if (!section) return null;
@@ -66,7 +66,7 @@ export function addNode(boardId, sectionId, title, priority = 'low', desc = '', 
     description: desc,
     priority,
     dueDate,
-    tags
+    tags: [...tags]
   });
   saveBoard();
   return --boards.nodesCount;

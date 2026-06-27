@@ -33,12 +33,12 @@ window.onload = () => {
         currentBoardName.textContent = boardName;
 
     } else {
-    noAccBtn.textContent = 'No boards to show. Please add or Select another one.';
-    noAccBtn.style.display = 'block';
-    noAccBtn.style.backgroundColor = 'transparent';
-    noAccBtn.style.cursor = 'text';
-    noAccBtn.onclick = null;
-    h2.style.opacity = '0';
+      noAccBtn.textContent = 'No boards to show. Please add or Select another one.';
+      noAccBtn.style.display = 'block';
+      noAccBtn.style.backgroundColor = 'transparent';
+      noAccBtn.style.cursor = 'text';
+      noAccBtn.onclick = null;
+      h2.style.opacity = '0';
     }
 
   } else {
@@ -66,8 +66,8 @@ document.body.addEventListener('click', e => {
     e.stopPropagation();
 
     const boardItem = e.target.closest('.boardItem'),
-    {boardId} = boardItem.dataset,
-    currentActiveBoardId = users.activeBoardId;
+      { boardId } = boardItem.dataset,
+      currentActiveBoardId = users.activeBoardId;
 
     deleteBoard(+boardId);
     boardsList.classList.remove('active');
@@ -107,8 +107,8 @@ document.body.addEventListener('click', e => {
   else if (e.target.classList.contains('rename-board') || e.target.closest('.rename-board')) {
     console.log('edit')
     const boardItem = e.target.closest('.boardItem'),
-    {boardId} = boardItem.dataset,
-    boardName = boardItem.querySelector('.truncate');
+      { boardId } = boardItem.dataset,
+      boardName = boardItem.querySelector('.truncate');
 
     document.querySelector('.tooltip.active').classList.toggle('active');
     boardName.contentEditable = 'true';
@@ -126,7 +126,7 @@ document.body.addEventListener('click', e => {
     });
 
     boardName.addEventListener('keydown', e => {
-      if ( e.key === "Enter" && /[\p{L}\p{N}\s]+$/gu.test(boardName.textContent)) {
+      if (e.key === "Enter" && /[\p{L}\p{N}\s]+$/gu.test(boardName.textContent)) {
         const newName = boardName.textContent.trim();
 
         boardsData.boardsData.find(board => board.boardId === +boardId).title = newName;
@@ -146,7 +146,7 @@ document.body.addEventListener('click', e => {
   // Add Section Name Field
   else if (e.target.classList.contains('add-field') || e.target.closest('.add-field')) {
     const sectsFieldsCont = document.getElementById('section-fields'),
-    sectFieldHTML = `<div class="flex items-center gap-2">
+      sectFieldHTML = `<div class="flex items-center gap-2">
               <input
                 name="section"
                 type="text"
@@ -168,8 +168,8 @@ document.body.addEventListener('click', e => {
   // Create Board
   else if (e.target.classList.contains('submit-board')) {
     const addedBoardName = document.getElementById('board-name').value,
-    sectionsNames = document.querySelectorAll('input[name="section"]'),
-    namesArray = sectionsNames.length ? Array.from(sectionsNames).map(sect => sect.value) : null;
+      sectionsNames = document.querySelectorAll('input[name="section"]'),
+      namesArray = sectionsNames.length ? Array.from(sectionsNames).map(sect => sect.value) : null;
     console.log(namesArray)
 
     if (addedBoardName) {
@@ -189,8 +189,8 @@ document.body.addEventListener('click', e => {
   // rename Sections
   else if (e.target.classList.contains('rename-section') || e.target.closest('.rename-section')) {
     const section = e.target.closest('.list'),
-    {sectionId} = section.dataset,
-    sectionName = section.querySelector('.sec-name');
+      { sectionId } = section.dataset,
+      sectionName = section.querySelector('.sec-name');
 
     requestAnimationFrame(() => {
       sectionName.contentEditable = 'true';
@@ -217,14 +217,57 @@ document.body.addEventListener('click', e => {
   // Delete Section
   else if (e.target.classList.contains('delete-section') || e.target.closest('.delete-section')) {
     const section = e.target.closest('.list'),
-    {sectionId} = section.dataset,
+      { sectionId } = section.dataset,
       sections = document.querySelectorAll('.list');
 
     deleteSection(activeBoardId, +sectionId);
     document.startViewTransition(() => section.remove());
   }
 
-  else if (e.target.classList.contains('')) {
+  else if (e.target.classList.contains('add-card') || e.target.closest('.add-card')) {
+    const btn = e.target.classList.contains('add-card') ? e.target : e.target.closest('.add-card'),
+    trello = btn.previousElementSibling;
+
+
+    const currentSvg = btn.querySelector('svg'),
+      newSvg = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF" class="animate-spin"><path d="M325-111.5q-73-31.5-127.5-86t-86-127.5Q80-398 80-480.5t31.5-155q31.5-72.5 86-127t127.5-86Q398-880 480-880q17 0 28.5 11.5T520-840q0 17-11.5 28.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-17 11.5-28.5T840-520q17 0 28.5 11.5T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480.5-80Q398-80 325-111.5Z"/></svg>`;
+    btn.insertAdjacentHTML('afterbegin', newSvg);
+    currentSvg.remove();
+    btn.disabled = 'true';
+    btn.style.opacity = '.5';
+
+    setTimeout(() => {
+      trello.innerHTML = `
+          <div
+            class="grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-32 overflow-y-auto truncate cursor-pointer animation-[grow_.5s]">
+
+        <div class="flex justify-between">
+          <h4 class="max-w-3/4 flex content-center items-center">Add title</h4>
+          <span class="priority inline-block leading-[normal] content-center text-sm p-1 rounded-sm bg-yellow-400">low</span>
+        </div>
+
+        <hr class="my-1.5">
+
+        <p class="truncate max-w-full node-details">Add description</p>
+
+        <div class="flex self-end justify-between mt-1.5">
+          <ul class="flex truncate max-w-3/5 *:text-sm *:lowercase *:p-1 *:rounded-sm gap-1 last:mr-2">
+            <li class="flex items-center bg-zinc-500 p-1 rounded-sm content-center">Add tag</li>
+          </ul>
+          <span class="due-date flex items-center content-center text-zinc-200 text-sm leading-[normal]">${new Date().getDate()}, ${new Date().toLocaleString("en-US", { month: "short" })}</span>
+        </div>
+      </div>` + trello.innerHTML;
+
+      addNode(activeBoardId, +btn.closest('.list').dataset.sectionId, 'Add title', 'low', 'Add description', `${new Date().getDate()}, ${new Date().toLocaleString("en-US", { month: "short" })}`, 'Add tag');
+
+      btn.firstElementChild.replaceWith(currentSvg);
+      btn.removeAttribute('disabled');
+      btn.style.opacity = '1';
+    }, 1500);
+  }
+
+  // Node Click behavior
+  else if () {
 
   }
 })
@@ -265,7 +308,7 @@ boardsList.addEventListener('click', e => {
 });
 
 document.body.addEventListener('click', e => {
-  if( e.target === logout || e.target.closest('.logout')) logoutFromAcc();
+  if (e.target === logout || e.target.closest('.logout')) logoutFromAcc();
 });
 
 function logoutFromAcc() {
@@ -305,7 +348,7 @@ function displayBoard(boardId, board = '') {
     const defaultMainHTML = `
       <div
           draggable="false"
-          class="list p-3 max-w-155 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] grid min-h-40 rounded-md border-2 border-green-100/20 transition-[translate,left,top] duration-200 ease-linear"
+          class="list p-3 max-w-155 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] grid min-h-40 rounded-md border-2 border-green-100/20 transition-[translate,left,top] duration-200 ease-linear self-start"
           data-section-id="${sect.id}"
         >
           <h3
@@ -344,7 +387,7 @@ function displayBoard(boardId, board = '') {
               </svg>
             </button>
 
-            <div class="tooltip p-1 grid bg-zinc-600/20 *:cursor-pointer *:p-3 *:transition-colors *:[:hover]:bg-zinc-300/40 min-w-max absolute top-full -right-1 rounded-md transition-transform scale-y-0 [&.active]:scale-y-100 origin-top z-10 backdrop-blur-lg border border-zinc-600/60">
+            <div class="tooltip p-1 grid bg-zinc-600/20 *:cursor-pointer *:p-3 *:transition-colors *:[:hover]:bg-zinc-300/40 min-w-max absolute top-full -right-1 rounded-md transition-transform -rotate-x-90 [&.active]:rotate-x-0 origin-top z-10 backdrop-blur-lg border border-zinc-600/60">
                     <button class="rename-section flex items-center justify-between gap-1 min-w-30">
                     Rename
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
@@ -355,8 +398,8 @@ function displayBoard(boardId, board = '') {
                   </button>
             </div>
           </h3>
-          <ul class="trello p-2">
-
+          <ul class="trello p-2 grid gap-2 grid-cols-[repeat(auto-fit,minmax(150px,1fr))]">
+            ${displayNodes(sect.nodes)}
           </ul>
           <button
             class="add-card flex items-center p-2 justify-center max-h-fit self-end cursor-pointer"
@@ -443,6 +486,38 @@ function displayBoardItems(userId, boardsDa = '') {
   });
 
   boardsList.innerHTML = fullBoards;
+}
+
+function displayNodes(nodes) {
+  if (!nodes.length) return '';
+  let fullHTML = '';
+  nodes.forEach(node => {
+    fullHTML += `
+    <div
+      data-section-id="${node.sectionId}"
+      data-node-id="${node.nodeId}"
+      data-priority="${node.priority}"
+      class="grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-32 overflow-y-auto truncate cursor-pointer">
+
+      <div class="flex justify-between">
+        <h4 class="max-w-3/4 flex content-center items-center">${node.title}</h4>
+        <span class="priority inline-block leading-[normal] content-center text-sm p-1 rounded-sm ${node.priority === 'high' ? 'bg-rose-400' : node.priority === 'medium' ? 'bg-orange-400' : 'bg-yellow-400'}">${node.priority}</span>
+      </div>
+
+      <hr class="my-1.5">
+
+      <p class="truncate max-w-full node-details">${node.description}</p>
+
+      <div class="flex self-end justify-between mt-1.5">
+        <ul class="flex truncate max-w-3/5 *:text-sm *:lowercase *:p-1 *:rounded-sm gap-1 last:mr-2">
+          ${node.tags && node.tags.length ? node.tags.map(tag => `<li class="flex items-center bg-zinc-500 p-1 rounded-sm content-center">${tag}</li>`).join('') : ''}
+        </ul>
+        <span class="due-date flex items-center content-center text-zinc-200 text-sm leading-[normal]">${node.dueDate}</span>
+      </div>
+    </div>`
+  });
+
+  return fullHTML;
 }
 
 function showSkeletonLoading(fn, ...args) {
