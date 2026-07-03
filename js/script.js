@@ -16,8 +16,6 @@ const boards = document.querySelector('.boards'),
   logout = document.querySelector('.logout'),
   addBoardBtn = document.querySelector('.add-board');
 
-
-
 let activeBoardId = users.activeBoardId;
 window.onload = () => {
   if (users.activeUserId !== null) {
@@ -226,49 +224,142 @@ document.body.addEventListener('click', e => {
 
   else if (e.target.classList.contains('add-card') || e.target.closest('.add-card')) {
     const btn = e.target.classList.contains('add-card') ? e.target : e.target.closest('.add-card'),
-    trello = btn.previousElementSibling;
+      trello = btn.previousElementSibling,
+      { sectionId } = btn.closest('.list').dataset;
 
+    showLoading(btn, () => {
+        const nodeId = addNode(activeBoardId, +sectionId, 'Add title', 'low', 'Add description', `${new Date().getDate()}, ${new Date().toLocaleString("en-US", { month: "short" })}`, 'Add tag');
 
-    const currentSvg = btn.querySelector('svg'),
-      newSvg = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF" class="animate-spin"><path d="M325-111.5q-73-31.5-127.5-86t-86-127.5Q80-398 80-480.5t31.5-155q31.5-72.5 86-127t127.5-86Q398-880 480-880q17 0 28.5 11.5T520-840q0 17-11.5 28.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-17 11.5-28.5T840-520q17 0 28.5 11.5T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480.5-80Q398-80 325-111.5Z"/></svg>`;
-    btn.insertAdjacentHTML('afterbegin', newSvg);
-    currentSvg.remove();
-    btn.disabled = 'true';
-    btn.style.opacity = '.5';
+        trello.insertAdjacentHTML('afterbegin', `
+              <div
+                data-section-id="${sectionId}"
+                data-node-id="${nodeId}"
+                class="task grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-32 overflow-y-auto truncate cursor-pointer animate-grow transition-colors outline-3 outline-transparent hover:outline-zinc-100">
 
-    setTimeout(() => {
-      trello.innerHTML = `
-          <div
-            class="grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-32 overflow-y-auto truncate cursor-pointer animation-[grow_.5s]">
+            <div class="flex justify-between grab-node">
+              <h4 class="max-w-27 flex content-center items-center">Add title</h4>
+              <span class="priority inline-block leading-[normal] content-center text-sm p-1 rounded-sm bg-yellow-400">low</span>
+            </div>
 
-        <div class="flex justify-between">
-          <h4 class="max-w-3/4 flex content-center items-center">Add title</h4>
-          <span class="priority inline-block leading-[normal] content-center text-sm p-1 rounded-sm bg-yellow-400">low</span>
-        </div>
+            <hr class="mt-1.5 mb-2.5">
 
-        <hr class="my-1.5">
+            <p class="truncate max-w-full node-details">Add description</p>
 
-        <p class="truncate max-w-full node-details">Add description</p>
-
-        <div class="flex self-end justify-between mt-1.5">
-          <ul class="flex truncate max-w-3/5 *:text-sm *:lowercase *:p-1 *:rounded-sm gap-1 last:mr-2">
-            <li class="flex items-center bg-zinc-500 p-1 rounded-sm content-center">Add tag</li>
-          </ul>
-          <span class="due-date flex items-center content-center text-zinc-200 text-sm leading-[normal]">${new Date().getDate()}, ${new Date().toLocaleString("en-US", { month: "short" })}</span>
-        </div>
-      </div>` + trello.innerHTML;
-
-      addNode(activeBoardId, +btn.closest('.list').dataset.sectionId, 'Add title', 'low', 'Add description', `${new Date().getDate()}, ${new Date().toLocaleString("en-US", { month: "short" })}`, 'Add tag');
-
-      btn.firstElementChild.replaceWith(currentSvg);
-      btn.removeAttribute('disabled');
-      btn.style.opacity = '1';
-    }, 1500);
+            <div class="flex self-end justify-between mt-2.5">
+              <ul class="flex truncate max-w-3/5 *:lowercase *:p-1 *:rounded-sm gap-1 last:mr-2">
+                <li class="flex items-center bg-zinc-500 p-1 rounded-sm content-center text-sm leading-[normal]">Add tag</li>
+              </ul>
+              <span class="due-date flex items-center content-center text-zinc-200 text-sm leading-[normal]">${new Date().getDate()}, ${new Date().toLocaleString("en-US", { month: "short" })}</span>
+            </div>
+          </div>`);
+    })
   }
 
   // Node Click behavior
-  else if () {
+  else if (e.target.classList.contains('task') || e.target.closest('.task')) {
+    const taskDiv = e.target.classList.contains('task') ? e.target : e.target.closest('.task'),
+      { sectionId, nodeId } = taskDiv.dataset;
 
+    showNodeDetails(+sectionId, +nodeId);
+  }
+
+  // Add New Section
+  else if (e.target.classList.contains('add-list') || e.target.closest('.add-list')) {
+    const secId = showLoading(e.target.closest('.add-list') || e.target, addSection, users.activeBoardId, 'Untitled'),
+      section = getSection(users.activeBoardId, secId),
+      secHtml = `<div
+          draggable="false"
+          class="list p-3 max-w-155 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] grid min-h-40 rounded-md border-2 border-green-100/20 transition-[translate,left,top,outline-color] duration-200 ease-linear self-start outline-2 outline-offset-2 outline-transparent"
+          data-section-id="${section.id}"
+        >
+          <h3
+            class="flex items-center justify-between cursor-grab border-b border-b-white pb-2 max-h-fit capitalize drag relative"
+          >
+            <div class="flex items-center">
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#FFFFFF"
+              >
+                <path
+                  d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z"
+                />
+              </svg>
+              <span class="sec-name">
+                ${section.title}
+              </span>
+            </div>
+
+            <button class="more-opt flex items-center cursor-pointer">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#fff"
+                aria-label="More Setting"
+              >
+                <path
+                  d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"
+                />
+              </svg>
+            </button>
+
+            <div class="tooltip p-1 grid bg-zinc-600/20 *:cursor-pointer *:p-3 *:transition-colors *:[:hover]:bg-zinc-300/40 min-w-max absolute top-full -right-1 rounded-md transition-transform -rotate-x-90 [&.active]:rotate-x-0 origin-top z-10 backdrop-blur-lg border border-zinc-600/60">
+                    <button class="rename-section flex items-center justify-between gap-1 min-w-30">
+                    Rename
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+                  </button>
+                  <button class="delete-section flex items-center justify-between gap-1 min-w-30">
+                    Delete
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                  </button>
+            </div>
+          </h3>
+          <ul class="trello p-2 grid gap-2  ">
+            ${displayNodes(section.nodes)}
+          </ul>
+          <button
+            class="add-card flex items-center p-2 justify-center max-h-fit self-end cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#FFFFFF"
+            >
+              <path
+                d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+              />
+            </svg>
+            Add a card
+          </button>
+        </div>
+
+              <button
+        class="add-list flex items-center p-2 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] gap-1 max-h-fit rounded-md border-2 border-green-100/20 justify-center cursor-pointer max-w-155"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#FFFFFF"
+        >
+          <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+        </svg>
+        Add new column
+      </button>
+        `;
+
+    document.startViewTransition(() => {
+      mainContainer.lastElementChild.remove();
+      mainContainer.insertAdjacentHTML('beforeend', secHtml);
+    })
   }
 })
 
@@ -311,6 +402,254 @@ document.body.addEventListener('click', e => {
   if (e.target === logout || e.target.closest('.logout')) logoutFromAcc();
 });
 
+const nodeDetailsDialog = document.querySelector('dialog.node-details');
+const nodeDetailsForm = document.getElementById('node-details-form');
+
+function setNodeFormError(dialog, message = '') {
+  const errorBox = dialog?.querySelector('#node-form-error');
+  if (errorBox) errorBox.textContent = message;
+}
+
+function getDialogTags(dialog) {
+  try {
+    return JSON.parse(dialog?.dataset.tags || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function renderTagChips(dialog, tags = []) {
+  const chipList = dialog?.querySelector('#tag-chip-list');
+  if (!chipList) return;
+
+  dialog.dataset.tags = JSON.stringify(tags);
+  chipList.innerHTML = tags.length
+    ? tags.map(tag => `
+        <span class="inline-flex max-w-fit items-center gap-2 rounded-full border border-purple-400/30 bg-purple-500/10 px-3 py-1 text-sm text-purple-100">
+          <span class="min-w-0 break-all">${tag}</span>
+          <button type="button" class="remove-tag text-sm text-rose-300 transition hover:text-rose-200" data-tag="${tag}">×</button>
+        </span>
+      `).join('')
+    : '';
+}
+
+function addTagToDialog(dialog, rawValue) {
+  const tagInput = dialog?.querySelector('#tag-input');
+  if (!dialog || !tagInput) return;
+
+  const value = rawValue.trim();
+  if (!value) return;
+
+  const tags = getDialogTags(dialog);
+  if (!tags.includes(value)) {
+    tags.push(value);
+    renderTagChips(dialog, tags);
+    tagInput.value = '';
+    setNodeFormError(dialog);
+  }
+}
+
+function removeTagFromDialog(dialog, tagToRemove) {
+  if (!dialog) return;
+  const tags = getDialogTags(dialog).filter(tag => tag !== tagToRemove);
+  renderTagChips(dialog, tags);
+}
+
+nodeDetailsForm?.addEventListener('submit', e => {
+  e.preventDefault();
+  saveNodeDetails(nodeDetailsDialog);
+});
+
+nodeDetailsDialog?.addEventListener('click', e => {
+  if (e.target.closest('.back')) {
+    e.preventDefault();
+    nodeDetailsDialog.close();
+  }
+
+  if (e.target.closest('.remove-tag')) {
+    e.preventDefault();
+    removeTagFromDialog(nodeDetailsDialog, e.target.closest('.remove-tag').dataset.tag);
+  }
+
+  if (!e.target.closest('.prio-picker')) {
+    closePriorityPicker(nodeDetailsDialog);
+  }
+});
+
+nodeDetailsDialog?.querySelector('#tag-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    addTagToDialog(nodeDetailsDialog, e.target.value);
+  }
+});
+
+nodeDetailsDialog?.querySelector('#add-tag-btn')?.addEventListener('click', () => {
+  addTagToDialog(nodeDetailsDialog, nodeDetailsDialog.querySelector('#tag-input').value);
+});
+
+function openPriorityPicker(dialog) {
+  const picker = dialog?.querySelector('.prio-picker'),
+    list = picker?.querySelector('.priority'),
+    icon = picker?.querySelector('svg');
+
+  if (!picker || !list) return;
+
+  list.classList.remove('hidden');
+  list.classList.add('grid');
+  icon?.classList.add('rotate-180');
+}
+
+function closePriorityPicker(dialog) {
+  const picker = dialog?.querySelector('.prio-picker');
+  const list = picker?.querySelector('.priority');
+  const icon = picker?.querySelector('svg');
+
+  if (!picker || !list) return;
+
+  list.classList.add('hidden');
+  list.classList.remove('grid');
+  icon?.classList.remove('rotate-180');
+}
+
+function setPriorityValue(dialog, value, label) {
+  const picker = dialog?.querySelector('.prio-picker');
+  const prioLabel = picker?.querySelector('.prio');
+  if (!picker || !prioLabel) return;
+
+  prioLabel.dataset.value = value;
+  prioLabel.querySelector('span').textContent = label;
+  closePriorityPicker(dialog);
+}
+
+function showNodeDetails(sectionId, nodeId) {
+  const node = getNode(users.activeBoardId, sectionId, nodeId),
+    dialog = nodeDetailsDialog,
+    dialogTextArea = dialog?.querySelector('textarea[name="description"]'),
+    dialogTitleInp = dialog?.querySelector('input[name="title"]'),
+    dialogPrioritySel = dialog?.querySelector('.prio'),
+    dialogDueDateInp = dialog?.querySelector('input[name="dueDate"]');
+
+  if (!node || !dialog) return;
+
+  dialogTitleInp.value = node.title ?? '';
+  dialogTextArea.value = node.description ?? '';
+  dialogPrioritySel.dataset.value = node.priority ?? 'low';
+
+  const priorityLabel = dialogPrioritySel.querySelector('span');
+  if (priorityLabel) {
+    priorityLabel.textContent = node.priority ? node.priority[0].toUpperCase() + node.priority.slice(1) : 'Priority';
+  } else {
+    dialogPrioritySel.textContent = node.priority ? node.priority[0].toUpperCase() + node.priority.slice(1) : 'Priority';
+  }
+
+  dialogDueDateInp.value = node.dueDate ?? '';
+  renderTagChips(dialog, Array.isArray(node.tags) ? node.tags : []);
+  setNodeFormError(dialog);
+  closePriorityPicker(dialog);
+
+  dialog.setAttribute('data-section-id', node.sectionId);
+  dialog.setAttribute('data-node-id', node.nodeId);
+
+  dialog.showModal();
+}
+
+nodeDetailsDialog?.querySelector('.prio-picker')?.addEventListener('click', e => {
+  const picker = e.target.closest('.prio-picker');
+  const option = e.target.closest('.prio-option');
+
+  if (option) {
+    setPriorityValue(nodeDetailsDialog, option.dataset.value, option.textContent.trim());
+    return;
+  }
+
+  if (picker) {
+    const list = picker.querySelector('.priority');
+    if (list?.classList.contains('hidden')) openPriorityPicker(nodeDetailsDialog);
+    else closePriorityPicker(nodeDetailsDialog);
+  }
+});
+
+function validateNodeDetails(dialog) {
+  const titleInput = dialog?.querySelector('input[name="title"]');
+  const descriptionInput = dialog?.querySelector('textarea[name="description"]');
+  const dueDateInput = dialog?.querySelector('input[name="dueDate"]');
+  const title = titleInput?.value.trim() || '';
+  const description = descriptionInput?.value.trim() || '';
+  const dueDate = dueDateInput?.value || '';
+  const tags = getDialogTags(dialog);
+
+  if (!title) return 'Task title is required.';
+  if (title.length < 2) return 'Task title must be at least 2 characters long.';
+  if (description.length > 500) return 'Description is too long.';
+  if (dueDate) {
+    const parsedDueDate = new Date(`${dueDate}T00:00:00`);
+    if (Number.isNaN(parsedDueDate.getTime())) return 'Due date is invalid.';
+  }
+  if (tags.some(tag => tag.length > 25)) return 'Each tag must be 25 characters or less.';
+
+  return '';
+}
+
+function saveNodeDetails(dialog) {
+  const sectionId = +dialog.dataset.sectionId,
+    nodeId = +dialog.dataset.nodeId,
+    titleInput = dialog.querySelector('input[name="title"]'),
+    descriptionInput = dialog.querySelector('textarea[name="description"]'),
+    priorityInput = dialog.querySelector('.prio'),
+    dueDateInput = dialog.querySelector('input[name="dueDate"]'),
+    node = getNode(users.activeBoardId, sectionId, nodeId);
+
+  if (!node || !dialog) return;
+
+  const validationMessage = validateNodeDetails(dialog);
+  if (validationMessage) {
+    setNodeFormError(dialog, validationMessage);
+    return;
+  }
+
+  const newTitle = titleInput.value.trim(),
+    newDescription = descriptionInput.value.trim(),
+    newPriority = priorityInput.dataset.value || 'low',
+    newDueDate = dueDateInput.value,
+    newTags = getDialogTags(dialog);
+
+  node.title = newTitle;
+  node.description = newDescription;
+  node.priority = newPriority;
+  node.dueDate = newDueDate;
+  node.tags = newTags;
+
+  saveBoard();
+
+  const taskCard = document.querySelector(`.task[data-section-id="${sectionId}"][data-node-id="${nodeId}"]`);
+  if (taskCard) {
+    const taskTitle = taskCard.querySelector('h4');
+    const taskDesc = taskCard.querySelector('.node-details');
+    const taskPriority = taskCard.querySelector('.priority');
+    const taskDueDate = taskCard.querySelector('.due-date');
+    const taskTags = taskCard.querySelector('ul');
+
+    if (taskTitle) taskTitle.textContent = node.title;
+    if (taskDesc) taskDesc.textContent = node.description;
+    if (taskPriority) {
+      taskPriority.textContent = node.priority;
+      taskPriority.className = `priority inline-block leading-[normal] content-center text-sm p-1 rounded-sm ${node.priority === 'high' ? 'bg-rose-400' : node.priority === 'medium' ? 'bg-orange-400' : 'bg-yellow-400'}`;
+    }
+    if (taskDueDate) taskDueDate.textContent = node.dueDate;
+    if (taskTags) {
+      taskTags.innerHTML = node.tags && node.tags.length
+        ? node.tags.map(tag => `<li class="flex max-w-full items-center break-all rounded-sm bg-zinc-500 p-1 text-sm leading-[normal]">${tag}</li>`).join('')
+        : '';
+    }
+  }
+
+  setNodeFormError(dialog);
+  dialog.close();
+}
+
+// To Be Exposed To Inline onclick
+window.saveNodeDetails = saveNodeDetails;
+
 function logoutFromAcc() {
   users.activeUserId = null;
   users.activeBoardId = null;
@@ -319,15 +658,23 @@ function logoutFromAcc() {
   window.location.href = './sign-in.html?act=cr';
 }
 
-function showLoading(ele, fun) {
-  const newSvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" class="inline-block animate-spin" fill="#FFFFFF"><path d="M325-111.5q-73-31.5-127.5-86t-86-127.5Q80-398 80-480.5t31.5-155q31.5-72.5 86-127t127.5-86Q398-880 480-880q17 0 28.5 11.5T520-840q0 17-11.5 28.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-17 11.5-28.5T840-520q17 0 28.5 11.5T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480.5-80Q398-80 325-111.5Z"/></svg>',
-    oldSvg = ele.querySelector('svg');
+function showLoading(btn, fun, ...args) {
+  const oldSvg = btn.querySelector('svg'),
+    newSvg = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF" class="animate-spin"><path d="M325-111.5q-73-31.5-127.5-86t-86-127.5Q80-398 80-480.5t31.5-155q31.5-72.5 86-127t127.5-86Q398-880 480-880q17 0 28.5 11.5T520-840q0 17-11.5 28.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-17 11.5-28.5T840-520q17 0 28.5 11.5T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480.5-80Q398-80 325-111.5Z"/></svg>`;
 
-  oldSvg.replaceWith(newSvg);
+  oldSvg.remove();
+  btn.insertAdjacentHTML('afterbegin', newSvg);
 
-  fun();
+  btn.disabled = 'true';
+  btn.style.opacity = '.5';
+  const funcValue = fun(...args);
 
-  newSvg.replaceWith(oldSvg)
+
+  btn.lastElementChild.remove();
+  btn.insertAdjacentElement('afterbegin', oldSvg);
+  btn.removeAttribute('disabled');
+  btn.style.opacity = '1';
+  return funcValue;
 }
 
 function loadContent(userId, activeBoardId) {
@@ -348,7 +695,7 @@ function displayBoard(boardId, board = '') {
     const defaultMainHTML = `
       <div
           draggable="false"
-          class="list p-3 max-w-155 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] grid min-h-40 rounded-md border-2 border-green-100/20 transition-[translate,left,top] duration-200 ease-linear self-start"
+          class="list p-3 max-w-155 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] grid min-h-40 rounded-md border-2 border-green-100/20 transition-[translate,left,top,outline-color] duration-200 ease-linear self-start outline-2 outline-offset-2 outline-transparent"
           data-section-id="${sect.id}"
         >
           <h3
@@ -398,7 +745,7 @@ function displayBoard(boardId, board = '') {
                   </button>
             </div>
           </h3>
-          <ul class="trello p-2 grid gap-2 grid-cols-[repeat(auto-fit,minmax(150px,1fr))]">
+          <ul class="trello p-2 grid gap-2  ">
             ${displayNodes(sect.nodes)}
           </ul>
           <button
@@ -496,21 +843,22 @@ function displayNodes(nodes) {
     <div
       data-section-id="${node.sectionId}"
       data-node-id="${node.nodeId}"
-      data-priority="${node.priority}"
-      class="grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-32 overflow-y-auto truncate cursor-pointer">
+      class="task backdrop-blur-md grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-43 overflow-y-auto truncate max-w-full transition-colors outline-3 outline-transparent hover:outline-zinc-100">
 
-      <div class="flex justify-between">
-        <h4 class="max-w-3/4 flex content-center items-center">${node.title}</h4>
+      <div class="flex justify-between grab-node cursor-grab">
+        <h4 class="max-w-27 truncate flex content-center items-center">${node.title}</h4>
         <span class="priority inline-block leading-[normal] content-center text-sm p-1 rounded-sm ${node.priority === 'high' ? 'bg-rose-400' : node.priority === 'medium' ? 'bg-orange-400' : 'bg-yellow-400'}">${node.priority}</span>
       </div>
 
-      <hr class="my-1.5">
+      <hr class="mt-1.5 mb-2.5">
 
       <p class="truncate max-w-full node-details">${node.description}</p>
 
-      <div class="flex self-end justify-between mt-1.5">
-        <ul class="flex truncate max-w-3/5 *:text-sm *:lowercase *:p-1 *:rounded-sm gap-1 last:mr-2">
-          ${node.tags && node.tags.length ? node.tags.map(tag => `<li class="flex items-center bg-zinc-500 p-1 rounded-sm content-center">${tag}</li>`).join('') : ''}
+      <div class="flex self-end justify-between mt-2.5">
+        <ul class="flex max-w-[70%] *:lowercase *:p-1 *:rounded-sm last:mr-1 gap-1">
+          <p class="truncate max-w-full">
+            ${node.tags && node.tags.length ? node.tags.map(tag => `<li class="flex items-center text-sm leading-[normal] bg-zinc-500 p-1 rounded-sm content-center"><span class="truncate max-w-16">${tag}</span></li>`).join('') : ''}
+          </p>
         </ul>
         <span class="due-date flex items-center content-center text-zinc-200 text-sm leading-[normal]">${node.dueDate}</span>
       </div>

@@ -1,128 +1,192 @@
 import { changeNodeOrderInSameSec, changeNodeSec, changeSectionsOrder, getBoard, getNode, getSection, users } from "./boards.js";
 const mainContainer = document.querySelector('.main-content');
 
-let draggedSection, clonedSection, frameId, lastCursorX = 0, lastCursorY = 0, cancelTime;
+let draggedSect, clonedSect, clonedNode, draggedNode, offset;
+
+const updateClonedSectPos = throttle(e => {
+  if (!clonedSect) return;
+  clonedSect.style.top = e.pageY - offset.y + 'px';
+  clonedSect.style.left = e.pageX - offset.x + 'px';
+});
+
+const updateClonedNodePos = throttle(e => {
+  if (!clonedNode) return;
+  clonedNode.style.top = e.pageY - offset.y + 'px';
+  clonedNode.style.left = e.pageX - offset.x + 'px';
+});
 
 document.body.addEventListener('mousedown', e => {
-  if ((e.target.classList.contains('drag') || e.target.closest('.drag')) && (!e.target.classList.contains('more-opt') && !e.target.closest('.more-opt')) && !(e.target.closest('.tooltip') || e.target.classList.contains('tooltip'))) {
-    draggedSection = e.target.closest('.list');
-    clonedSection = draggedSection.cloneNode(true);
-    const draggedRec = draggedSection.getBoundingClientRect(),
-      draggedSectionWidth = draggedRec.width,
-      draggedSectionHeight = draggedRec.height;
+  draggedSect = e.target.classList.contains('drag') ?
+    e.target.closest('.list') : e.target.closest('.drag') ? e.target.closest('.list') : null,
+    draggedNode = e.target.classList.contains('grab-node') ?
+      e.target.closest('.task') : e.target.closest('.grab-node') ? e.target.closest('.task') : null;
 
-    requestAnimationFrame(() => {
-      draggedSection.style.opacity = '0';
-      document.body.classList.add('grabbing');
-      clonedSection.classList.add('absolute');
+  if (draggedSect &&
+    !(e.target.classList.contains('more-opt')
+      || e.target.closest('.more-opt'))
+    && !(e.target.closest('.tooltip')
+      || e.target.classList.contains('tooltip'))
+  ) {
+    clonedSect = createClonedEle(draggedSect, e);
+  }
 
-      clonedSection.style.pointerEvents = 'none';
-      clonedSection.style.height = draggedSectionHeight + 'px';
-      clonedSection.style.width = draggedSectionWidth + 'px';
-      clonedSection.style.top = e.pageY + 'px';
-      clonedSection.style.left = e.pageX + 'px';
-      clonedSection.style.translate = '-50% 0';
-      document.body.appendChild(clonedSection);
-    })
+  else if (draggedNode) {
+    clonedNode = createClonedEle(draggedNode, e);
+    clonedNode.style.pointerEvents = 'none';
   }
 });
 
 document.body.addEventListener('mousemove', e => {
-  if (draggedSection) {
-    lastCursorX = e.pageX;
-    lastCursorY = e.pageY;
-
-    if (frameId) cancelAnimationFrame(frameId);
-
-    if (!clonedSection) return;
-    frameId = requestAnimationFrame(() => {
-      clonedSection.style.top = lastCursorY + 'px';
-      clonedSection.style.left = lastCursorX + 'px';
-      clonedSection.style.translate = '-50% 0';
-      frameId = null;
-    })
-  }
+  if (clonedSect) updateClonedSectPos(e);
+  else if (clonedNode) updateClonedNodePos(e);
 });
-
-let time;
 
 document.body.addEventListener('mouseup', e => {
-  if (draggedSection) {
-    const closestSection = getClosestSect(clonedSection.getBoundingClientRect(), e);
 
-    if (frameId) cancelAnimationFrame(frameId);
+  if (draggedSect &&
+    !(e.target.classList.contains('more-opt')
+      || e.target.closest('.more-opt'))
+    && !(e.target.closest('.tooltip')
+      || e.target.classList.contains('tooltip'))
+  ) {
+    const closestSec = getClosest(clonedSect.getBoundingClientRect(), e);
 
-    requestAnimationFrame(() => {
-      draggedSection.style.opacity = '1';
-      document.body.classList.remove('grabbing');
-      clonedSection.remove();
-    })
+    clonedSect.remove();
 
-    if (closestSection) {
-      console.log(closestSection.dataset.sectionId);
-      changeSectionsOrder(users.activeBoardId, closestSection.dataset.sectionId, draggedSection.dataset.sectionId);
+    draggedSect.style.opacity = '1';
+    draggedSect.style.pointerEvents = 'all';
 
-      const closestRec = closestSection.getBoundingClientRect(),
-        draggedRec = draggedSection.getBoundingClientRect(),
-        translateXAmount = draggedRec.left - closestRec.left,
-        translateYAmount = draggedRec.top - closestRec.top;
-
-      requestAnimationFrame(() => {
-        closestSection.style.pointerEvents = 'none';
-        draggedSection.style.pointerEvents = 'none';
-        closestSection.style.translate = `${translateXAmount}px ${translateYAmount}px`;
-        draggedSection.style.translate = `${translateXAmount * -1}px ${translateYAmount * -1}px`;
-      })
-
-      const holder = document.createElement('div');
-
-      if (time) clearTimeout(time);
-      time = setTimeout(() => {
+    if (closestSec) {
+      setTimeout(() => {
         requestAnimationFrame(() => {
-          closestSection.replaceWith(holder);
-          draggedSection.replaceWith(closestSection);
-          holder.replaceWith(draggedSection);
-          closestSection.style.translate = '0px 0px';
-          draggedSection.style.translate = '0px 0px';
-          closestSection.style.pointerEvents = 'all';
-          draggedSection.style.pointerEvents = 'all';
 
-          clonedSection = null;
-          draggedSection = null;
+          const closestRec = closestSec.getBoundingClientRect(),
+            draggedRec = draggedSect.getBoundingClientRect();
+
+          // Change Order Visually
+          const translateX = closestRec.left - draggedRec.left,
+            translateY = closestRec.top - draggedRec.top;
+
+          draggedSect.style.translate = `${translateX}px ${translateY}px`;
+          closestSec.style.translate = `${translateX * -1}px ${translateY * -1}px`;
+
+
+          setTimeout(() => {
+            const holder = document.createElement('div');
+            // Change order In DOM
+
+            draggedSect.replaceWith(holder);
+            closestSec.replaceWith(draggedSect);
+            holder.replaceWith(closestSec);
+
+            // Reset Translate Property Value
+            draggedSect.style.translate = '0px 0px';
+            closestSec.style.translate = '0px 0px';
+
+            resetSect();
+          }, 210)
+
+          // Change Order In The Array
+          changeSectionsOrder(users.activeBoardId, draggedSect.dataset.sectionId, closestSec.dataset.sectionId);
         })
-      }, 200);
-    }
+      }, 20)
+    } else resetSect();
+  }
+
+  else if (clonedNode) {
+    clonedNode.remove();
+
+    // Dragged Node Styling
+    draggedNode.style.opacity = '1';
+    draggedNode.style.pointerEvents = 'all';
+
+    resetSect(false);
   }
 });
 
-
-function getClosestSect(eleDimensions, event) {
-  const ele = event.target.classList.contains('list') ?
+function getClosest(eleDimensions, event) {
+  const targetedSect = event.target.classList.contains('list') ?
     event.target : event.target.closest('.list');
 
-  if (ele?.dataset.sectionId !== draggedSection.dataset.sectionId) return ele;
+  if (targetedSect?.dataset.sectionId !== draggedSect.dataset.sectionId) return targetedSect;
 
-  const leftSearchArea = clonedSection.getBoundingClientRect().left,
-    rightSearchArea = clonedSection.getBoundingClientRect().right,
-    topSearchArea = clonedSection.getBoundingClientRect().top,
-    bottomSearchArea = clonedSection.getBoundingClientRect().bottom,
-    lists = Array.from(document.querySelectorAll('.list'));
-  let closest = null;
+  const lists = [...document.querySelectorAll('.list')];
+  let closest = null,
+    minDistance = Infinity;
+
+  const centerX = eleDimensions.left + eleDimensions.width / 2,
+    centerY = eleDimensions.top + eleDimensions.height / 2;
 
   for (const list of lists) {
-    if (list.dataset.sectionId === draggedSection.dataset.sectionId) continue;
+    if (list.dataset.sectionId === draggedSect.dataset.sectionId) continue;
 
-    const listRec = list.getBoundingClientRect();
+    const listRec = list.getBoundingClientRect(),
+      listCenterX = listRec.left + listRec.width / 2,
+      listCenterY = listRec.top + listRec.height / 2,
+      distance = Math.hypot(listCenterX - centerX, listCenterY - centerY);
 
-    if (
-      ((listRec.left >= leftSearchArea && listRec.left <= rightSearchArea) ||
-        (listRec.right >= leftSearchArea && listRec.right <= rightSearchArea)) &&
-
-      ((listRec.top >= topSearchArea && listRec.top <= bottomSearchArea) ||
-        (listRec.bottom >= topSearchArea && listRec.bottom <= bottomSearchArea))) {
+    if (distance < minDistance) {
+      minDistance = distance;
       closest = list;
     }
   }
 
   return closest;
+}
+
+function createClonedEle(ele, e) {
+  const clonedEle = ele.cloneNode(true),
+    draggedRect = ele.getBoundingClientRect();
+
+  // Body Styling
+  document.body.classList.add('grabbing');
+
+  // Hide Dragged Ele
+  ele.style.opacity = '0';
+  ele.style.pointerEvents = 'none';
+
+  // Update Offset Var
+  offset = {
+    x: e.offsetX,
+    y: e.offsetY
+  }
+
+  // Cloned Element Styling
+  clonedEle.style.position = 'absolute';
+  clonedEle.style.top = e.pageY - e.offsetY + 'px';
+  clonedEle.style.left = e.pageX - e.offsetX + 'px';
+  clonedEle.style.minWidth = draggedRect.width + 'px';
+  clonedEle.style.minHeight = draggedRect.height + 'px';
+
+  // Append Cloned Ele To Body
+  document.body.append(clonedEle);
+
+  return clonedEle;
+}
+
+function resetSect(sect = true) {
+  document.body.classList.remove('grabbing');
+
+  if (sect) {
+    clonedSect = null;
+    draggedSect = null;
+  } else {
+    clonedNode = null;
+    draggedNode = null;
+  }
+}
+
+function throttle(fn) {
+  let frameId = null;
+  let latestEvent;
+
+  return (e) => {
+    latestEvent = e;
+    if (frameId) return;
+
+    frameId = requestAnimationFrame(() => {
+      fn(latestEvent);
+      frameId = null;
+    });
+  }
 }

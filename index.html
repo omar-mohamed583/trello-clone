@@ -56,9 +56,19 @@
         </h1>
 
         <div class="boards grid relative max-w-fit">
-          <button class="menu-toggler sm:hidden flex items-center gap-1 [&.active_svg]:rotate-180">
+          <button
+            class="menu-toggler sm:hidden flex items-center gap-1 [&.active_svg]:rotate-180"
+          >
             Boards
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#FFFFFF"
+            >
+              <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+            </svg>
           </button>
           <div class="hidden gap-4 *:cursor-pointer sm:flex">
             <button
@@ -111,7 +121,7 @@
           <ul
             class="profile absolute top-[113%] right-0 rounded-md bg-zinc-500/30 border border-zinc-500/70 backdrop-blur-lg grid *:py-4 *:px-3 *:font-medium transition-transform scale-y-0 [&.active]:scale-y-100 origin-top [&.active]:z-50 min-w-max *:transition-colors *:rounded-md [&_>_*:hover]:bg-zinc-300/20 *:cursor-pointer *:text-sm"
           >
-            <li class="edit" >Edit personal details</li>
+            <li class="edit">Edit personal details</li>
             <li class="dashboard">Dashboard</li>
             <li class="logout flex items-center justify-between text-rose-300">
               Logout
@@ -158,9 +168,20 @@
         method="dialog"
       >
         <div class="grid gap-1 [*]:items-center">
-          <div class="text-sm font-semibold uppercase tracking-[0.2em] text-purple-200">New board</div>
-          <h2 class="text-2xl leading-[normal] font-bold text-white text-center">Add board</h2>
-          <p class="text-sm leading-6 text-zinc-300">Enter the board name and optional sections. If you add any section names, default sections will be disabled.</p>
+          <div
+            class="text-sm font-semibold uppercase tracking-[0.2em] text-purple-200"
+          >
+            New board
+          </div>
+          <h2
+            class="text-2xl leading-[normal] font-bold text-white text-center"
+          >
+            Add board
+          </h2>
+          <p class="text-sm leading-6 text-zinc-300">
+            Enter the board name and optional sections. If you add any section
+            names, default sections will be disabled.
+          </p>
         </div>
 
         <label class="grid gap-2 text-sm leading-[normal] text-zinc-200">
@@ -177,7 +198,9 @@
 
         <div class="grid gap-3">
           <div class="flex items-center justify-between gap-3">
-            <div class="text-sm font-medium text-zinc-200 leading-[normal]">Section names</div>
+            <div class="text-sm font-medium text-zinc-200 leading-[normal]">
+              Section names
+            </div>
             <button
               id="add-section-field"
               type="button"
@@ -188,12 +211,15 @@
             </button>
           </div>
 
-          <div id="section-fields" class="grid gap-2 max-h-[10ch] overflow-auto">
+          <div
+            id="section-fields"
+            class="grid gap-2 max-h-[10ch] overflow-auto"
+          >
             <div class="flex items-center gap-2">
               <input
                 name="section"
                 type="text"
-                class="flex-1 rounded-2xl border border-zinc-700 bg-zinc-950/80 px-4 py-3 text-white outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
+                class="flex-1 rounded-2xl border border-zinc-700 bg-zinc-950/80 px-4 py-3 text-white outline-none"
                 placeholder="Section name (optional)"
               />
               <button
@@ -226,6 +252,134 @@
       </form>
     </dialog>
 
+    <dialog
+      class="node-details rounded-2xl border border-white/10 bg-[linear-gradient(135deg,rgba(9,20,19,0.98),rgba(30,41,59,0.98))] p-0 shadow-2xl shadow-black/40 backdrop:backdrop-blur-2xl fixed top-[50%] left-[50%] translate-[-50%] z-100000000000000 w-[min(92vw,720px)] max-w-180"
+    >
+      <form
+        id="node-details-form"
+        class="grid gap-4 p-5 sm:p-6"
+      >
+        <div class="flex items-start justify-between gap-3">
+          <div class="grid gap-1">
+            <p
+              class="text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-purple-200/90"
+            >
+              Update task
+            </p>
+            <h3 class="text-xl font-semibold text-white">Task details</h3>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              class="back inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-white transition hover:bg-white/20"
+              aria-label="Close editor"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="22px"
+                viewBox="0 -960 960 960"
+                width="22px"
+                fill="#FFFFFF"
+              >
+                <path
+                  d="M360-240 120-480l240-240 56 56-144 144h568v80H272l144 144-56 56Z"
+                />
+              </svg>
+            </button>
+            <button
+              type="submit"
+              class="save inline-flex items-center justify-center rounded-2xl bg-[#68F378] px-4 py-2.5 text-md leading-[normal] font-semibold text-black transition hover:bg-[#4fe65a]"
+            >
+              Save changes
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="grid gap-4 rounded-2xl border border-white/10 bg-zinc-950/40 p-4 sm:p-5"
+        >
+          <label class="grid gap-2 text-sm text-zinc-200">
+            <span class="font-medium">Task title</span>
+            <input
+              type="text"
+              name="title"
+              placeholder="Enter task title"
+              class="title w-full rounded-2xl border border-zinc-700 bg-zinc-950/80 px-4 py-3 text-white outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
+            />
+          </label>
+
+          <label class="grid gap-2 text-sm text-zinc-200">
+            <span class="font-medium">Description</span>
+            <textarea
+              name="description"
+              rows="5"
+              placeholder="Add task details"
+              class="min-h-32 w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-950/80 px-4 py-3 text-white outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
+            ></textarea>
+          </label>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="grid">
+              <span class="font-medium text-zinc-200 text-sm leading-[normal]">Priority</span>
+
+              <div class="prio-picker relative rounded-2xl border border-zinc-700 bg-zinc-950/80 px-4 py-3 text-white outline-none transition max-h-fit cursor-pointer">
+                <button
+                  type="button"
+                  class="flex w-full items-center justify-between gap-3 text-left font-medium prio"
+                  data-value=""
+                >
+                  <span>Priority</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#FFFFFF" class="transition-transform">
+                    <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/>
+                  </svg>
+                </button>
+                <ul
+                  class="priority hidden rounded-2xl border border-zinc-700 bg-zinc-950/80 text-white outline-none transition absolute top-[103%] left-0 right-0 z-20 overflow-hidden shadow-lg shadow-black/20"
+                >
+                  <li class="prio-option cursor-pointer px-3 py-[.72rem] transition hover:bg-zinc-400/40" data-value="low">Low</li>
+                  <li class="prio-option cursor-pointer px-3 py-[.72rem] transition hover:bg-zinc-400/40" data-value="medium">Medium</li>
+                  <li class="prio-option cursor-pointer px-3 py-[.72rem] transition hover:bg-zinc-400/40" data-value="high">High</li>
+                </ul>
+              </div>
+            </div>
+
+            <label class="grid gap-2 text-sm text-zinc-200">
+              <span class="font-medium">Due date</span>
+              <input
+                type="date"
+                name="dueDate"
+                class="due-date rounded-2xl border border-zinc-700 bg-zinc-950/80 px-4 py-3 text-white outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
+              />
+            </label>
+          </div>
+
+          <label class="grid gap-2 text-sm text-zinc-200">
+            <span class="font-medium">Tags</span>
+            <div class="rounded-2xl border border-zinc-700 bg-zinc-950/80 p-3">
+              <div id="tag-chip-list" class="mb-2 flex min-h-8 flex-wrap gap-2"></div>
+              <div class="flex flex-wrap items-center gap-2">
+                <input
+                  id="tag-input"
+                  type="text"
+                  placeholder="Add a tag"
+                  class="tags min-w-0 flex-1 rounded-xl border border-zinc-700 bg-zinc-900/80 px-3 py-2 text-sm text-white outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
+                />
+                <button
+                  id="add-tag-btn"
+                  type="button"
+                  class="rounded-xl bg-purple-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-purple-500"
+                >
+                  Add
+                </button>
+              </div>
+              <p class="mt-2 text-xs text-zinc-400">Press Enter or click Add to create a tag.</p>
+            </div>
+          </label>
+
+          <p id="node-form-error" class="min-h-5 text-sm text-rose-300"></p>
+        </div>
+      </form>
+    </dialog>
     <script
       src="js/script.js"
       type="module"
