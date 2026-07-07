@@ -222,21 +222,23 @@ document.body.addEventListener('click', e => {
     document.startViewTransition(() => section.remove());
   }
 
+  // Add task
   else if (e.target.classList.contains('add-card') || e.target.closest('.add-card')) {
     const btn = e.target.classList.contains('add-card') ? e.target : e.target.closest('.add-card'),
-      trello = btn.previousElementSibling,
+      trello = btn.parentElement.querySelector('.trello'),
       { sectionId } = btn.closest('.list').dataset;
 
     showLoading(btn, () => {
-        const nodeId = addNode(activeBoardId, +sectionId, 'Add title', 'low', 'Add description', `${new Date().getDate()}, ${new Date().toLocaleString("en-US", { month: "short" })}`, 'Add tag');
+      const nodeId = addNode(activeBoardId, +sectionId, 'Add title', 'low', 'Add description', `${new Date().getDate()}, ${new Date().toLocaleString("en-US", { month: "short" })}`, 'Add tag');
 
-        trello.insertAdjacentHTML('afterbegin', `
+      trello.insertAdjacentHTML('afterbegin', `
               <div
                 data-section-id="${sectionId}"
                 data-node-id="${nodeId}"
-                class="task grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-32 overflow-y-auto truncate cursor-pointer animate-grow transition-colors outline-3 outline-transparent hover:outline-zinc-100">
+                tabindex="0"
+                class="task backdrop-blur-md grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-43 overflow-y-auto truncate max-w-full transition-all duration-200 outline-3 outline-transparent hover:outline-zinc-100 animate-grow focus-visible:outline-zinc-100">
 
-            <div class="flex justify-between grab-node">
+            <div class="flex justify-between grab-node cursor-grab">
               <h4 class="max-w-27 flex content-center items-center">Add title</h4>
               <span class="priority inline-block leading-[normal] content-center text-sm p-1 rounded-sm bg-yellow-400">low</span>
             </div>
@@ -252,7 +254,12 @@ document.body.addEventListener('click', e => {
               <span class="due-date flex items-center content-center text-zinc-200 text-sm leading-[normal]">${new Date().getDate()}, ${new Date().toLocaleString("en-US", { month: "short" })}</span>
             </div>
           </div>`);
+
+      setTimeout(() => {
+        document.querySelector(`[data-node-id="${nodeId}"]`)?.classList.remove('animate-grow');
+      }, 300)
     })
+
   }
 
   // Node Click behavior
@@ -266,11 +273,11 @@ document.body.addEventListener('click', e => {
   // Add New Section
   else if (e.target.classList.contains('add-list') || e.target.closest('.add-list')) {
     const secId = showLoading(e.target.closest('.add-list') || e.target, addSection, users.activeBoardId, 'Untitled'),
-      section = getSection(users.activeBoardId, secId),
+      sect = getSection(users.activeBoardId, secId),
       secHtml = `<div
           draggable="false"
           class="list p-3 max-w-155 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] grid min-h-40 rounded-md border-2 border-green-100/20 transition-[translate,left,top,outline-color] duration-200 ease-linear self-start outline-2 outline-offset-2 outline-transparent"
-          data-section-id="${section.id}"
+          data-section-id="${sect.id}"
         >
           <h3
             class="flex items-center justify-between cursor-grab border-b border-b-white pb-2 max-h-fit capitalize drag relative"
@@ -289,7 +296,7 @@ document.body.addEventListener('click', e => {
                 />
               </svg>
               <span class="sec-name">
-                ${section.title}
+                ${sect.title}
               </span>
             </div>
 
@@ -320,8 +327,11 @@ document.body.addEventListener('click', e => {
             </div>
           </h3>
           <ul class="trello p-2 grid gap-2  ">
-            ${displayNodes(section.nodes)}
+            ${displayNodes(sect.nodes)}
           </ul>
+          <div class="drop-zone-indicator w-full max-w-155 h-14 rounded-md bg-zinc-600/20 border-2 border-dashed mt-5 border-purple-400/50 backdrop-blur-lg scale-y-0 opacity-0 transition-all duration-200 origin-top [&.active]:scale-y-100 [&.active]:opacity-100 flex items-center justify-center">
+            <span class="text-zinc-300 text-sm font-medium tracking-wide">Drop Here</span>
+          </div>
           <button
             class="add-card flex items-center p-2 justify-center max-h-fit self-end cursor-pointer"
           >
@@ -338,23 +348,7 @@ document.body.addEventListener('click', e => {
             </svg>
             Add a card
           </button>
-        </div>
-
-              <button
-        class="add-list flex items-center p-2 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] gap-1 max-h-fit rounded-md border-2 border-green-100/20 justify-center cursor-pointer max-w-155"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#FFFFFF"
-        >
-          <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
-        </svg>
-        Add new column
-      </button>
-        `;
+        </div>`;
 
     document.startViewTransition(() => {
       mainContainer.lastElementChild.remove();
@@ -748,6 +742,9 @@ function displayBoard(boardId, board = '') {
           <ul class="trello p-2 grid gap-2  ">
             ${displayNodes(sect.nodes)}
           </ul>
+          <div class="drop-zone-indicator w-full max-w-155 h-14 rounded-md bg-zinc-600/20 border-2 border-dashed mt-5 border-purple-400/50 backdrop-blur-lg scale-y-0 opacity-0 transition-all duration-200 origin-top [&.active]:scale-y-100 [&.active]:opacity-100 flex items-center justify-center">
+            <span class="text-zinc-300 text-sm font-medium tracking-wide">Drop Here</span>
+          </div>
           <button
             class="add-card flex items-center p-2 justify-center max-h-fit self-end cursor-pointer"
           >
@@ -800,7 +797,7 @@ function displayBoardItems(userId, boardsDa = '') {
 
   boardsJson.forEach(board => {
     const boardListItem = `
-            <li data-board-id="${board.boardId}" class="boardItem relative" title="${board.title}">
+            <li data-board-id="${board.boardId}" class="boardItem relative" title="${board.title}" tabindex="0">
               <span class="block p-1 max-w-45 truncate self-center">${board.title}</span>
               <button
                 class="*:fill-white relative more-setting"
@@ -843,7 +840,8 @@ function displayNodes(nodes) {
     <div
       data-section-id="${node.sectionId}"
       data-node-id="${node.nodeId}"
-      class="task backdrop-blur-md grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-43 overflow-y-auto truncate max-w-full transition-colors outline-3 outline-transparent hover:outline-zinc-100">
+      tabindex="0"
+      class="task backdrop-blur-md grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-43 overflow-y-auto truncate max-w-full transition-all duration-200 outline-3 outline-transparent hover:outline-zinc-100 focus-visible:outline-zinc-100">
 
       <div class="flex justify-between grab-node cursor-grab">
         <h4 class="max-w-27 truncate flex content-center items-center">${node.title}</h4>

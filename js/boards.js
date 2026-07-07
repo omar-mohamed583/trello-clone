@@ -8,28 +8,28 @@ export const boards = JSON.parse(localStorage.getItem('boards')) ?? {
   nodesCount: 0,
   boardsData: [
     // {
-      // userId: ,
-      // boardId: 123,
-      // title: 'default',
-      // content: [              // Sections
-      //   {
-      //     title: 'Todo',
-      //     id: 1234,
-      //     order: 0,
-      //     nodes: [            // Nodes
-      //       {
-      //         nodeId: 1234,
-      //         sectionId: 1234,
-      //         order: 0,
-      //         title: '',
-      //         description: '',
-      //         priority: 'high',
-      //         dueDate: '5-3-2026',
-      //         tags: ['Frontend', 'Backend', 'Data']
-      //       }
-      //     ]
-      //   }
-      // ],
+    // userId: ,
+    // boardId: 123,
+    // title: 'default',
+    // content: [              // Sections
+    //   {
+    //     title: 'Todo',
+    //     id: 1234,
+    //     order: 0,
+    //     nodes: [            // Nodes
+    //       {
+    //         nodeId: 1234,
+    //         sectionId: 1234,
+    //         order: 0,
+    //         title: '',
+    //         description: '',
+    //         priority: 'high',
+    //         dueDate: '5-3-2026',
+    //         tags: ['Frontend', 'Backend', 'Data']
+    //       }
+    //     ]
+    //   }
+    // ],
     // }
   ]
 }
@@ -88,48 +88,24 @@ export function getNode(boardId, sectionId, nodeId) {
   return section?.nodes.find(node => node.nodeId === nodeId);
 }
 
-export function changeNodeOrderInSameSec(boardId, sectionId, replacedNodeId, replacedByNodeId) {
-  const boardIndex = getBoardIndex(boardId);
-  const section = boards.boardsData[boardIndex]?.content.find(sec => sec.id === sectionId);
-  if (!section) return;
-
-  let replacedByIndex, replacedIndex, replacedByNode, replacedNode;
-
-  section.nodes.forEach((node, ind) => {
-    if (replacedByNode && replacedNode) return;
-    else if (node.nodeId === replacedByNodeId) {
-      replacedByIndex = ind;
-      replacedByNode = node;
-    } else if (node.nodeId === replacedNodeId) {
-      replacedIndex = ind;
-      replacedNode = node;
-    }
-  });
-
-  if (!replacedByNode || !replacedNode) return;
-
-  const placeHolder = replacedByNode.order;
-  replacedByNode.order = replacedNode.order;
-  replacedNode.order = placeHolder;
-
-  section.nodes.splice(replacedByIndex, 1, replacedNode);
-  section.nodes.splice(replacedIndex, 1, replacedByNode);
-}
-
-export function changeNodeSec(boardId, oldSecId, newSecId, nodeId) {
+export function changeNodePosition(boardId, oldSecId, newSecId, nodeId) {
   const boardIndex = getBoardIndex(boardId);
   const board = boards.boardsData[boardIndex];
   if (!board) return;
 
   const oldSection = board.content.find(sec => sec.id === oldSecId);
   const newSection = board.content.find(sec => sec.id === newSecId);
-  if (!oldSection || !newSection) return;
+  if (!oldSection || !newSection) return console.error(`no Old Section: ${oldSection} Or New Section ${newSection}`);
 
   const draggedNode = oldSection.nodes.find(node => node.nodeId === nodeId);
-  if (!draggedNode) return;
+  if (!draggedNode) return console.log('didnt Find Dragged Node In Boards!');
 
   oldSection.nodes = oldSection.nodes.filter(node => node.nodeId !== nodeId);
+  draggedNode.sectionId = newSecId;
+  draggedNode.order = newSection.nodes.length + 1;
   newSection.nodes.push(draggedNode);
+
+  saveBoard();
 }
 
 export function addSection(boardId, title) {
