@@ -58,8 +58,9 @@ export function addNode(boardId, sectionId, title, priority = 'low', desc = '', 
   const section = boards.boardsData[boardIndex]?.content.find(sec => sec.id === sectionId);
   if (!section) return null;
 
+  const newNodeId = boards.nodesCount++;
   section.nodes.push({
-    nodeId: boards.nodesCount++,
+    nodeId: newNodeId,
     sectionId,
     order: section.nodes.length + 1,
     title,
@@ -69,7 +70,7 @@ export function addNode(boardId, sectionId, title, priority = 'low', desc = '', 
     tags: [...tags]
   });
   saveBoard();
-  return --boards.nodesCount;
+  return newNodeId;
 }
 
 export function deleteNode(boardId, sectionId, nodeId) {
@@ -104,6 +105,48 @@ export function changeNodePosition(boardId, oldSecId, newSecId, nodeId) {
   draggedNode.sectionId = newSecId;
   draggedNode.order = newSection.nodes.length + 1;
   newSection.nodes.push(draggedNode);
+
+  saveBoard();
+}
+
+export function swapNodesInSameSection(boardId, sectionId, nodeId1, nodeId2) {
+  const board = getBoardById(boardId);
+  if (!board) return;
+
+  const section = board.content.find(sec => sec.id === sectionId);
+  if (!section) return;
+
+  const index1 = section.nodes.findIndex(n => n.nodeId === nodeId1);
+  const index2 = section.nodes.findIndex(n => n.nodeId === nodeId2);
+
+  if (index1 === -1 || index2 === -1) return;
+
+  [section.nodes[index1], section.nodes[index2]] = [section.nodes[index2], section.nodes[index1]];
+
+  saveBoard();
+}
+
+export function swapNodesBetweenSections(boardId, sec1Id, node1Id, sec2Id, node2Id) {
+  const board = getBoardById(boardId);
+  if (!board) return;
+
+  const sec1 = board.content.find(s => s.id === sec1Id);
+  const sec2 = board.content.find(s => s.id === sec2Id);
+  if (!sec1 || !sec2) return;
+
+  const node1 = sec1.nodes.find(n => n.nodeId === node1Id);
+  const node2 = sec2.nodes.find(n => n.nodeId === node2Id);
+
+  if (!node1 || !node2) return;
+
+  sec1.nodes = sec1.nodes.filter(n => n.nodeId !== node1Id);
+  sec2.nodes = sec2.nodes.filter(n => n.nodeId !== node2Id);
+
+  node1.sectionId = sec2Id;
+  node2.sectionId = sec1Id;
+
+  sec2.nodes.push(node1);
+  sec1.nodes.push(node2);
 
   saveBoard();
 }

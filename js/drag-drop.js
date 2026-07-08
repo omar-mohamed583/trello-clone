@@ -1,7 +1,7 @@
-import { changeNodePosition, changeSectionsOrder, getBoard, getNode, getSection, users } from "./boards.js";
+import { changeNodePosition, changeSectionsOrder, getBoard, getNode, getSection, swapNodesBetweenSections, swapNodesInSameSection, users } from "./boards.js";
 
 const mainContainer = document.querySelector('.main-content'),
-  animation_duration = 210;
+  animation_duration = 220;
 
 let mainContainerRect = mainContainer.getBoundingClientRect();
 
@@ -18,18 +18,18 @@ observer.observe(mainContainer, {
   subtree: true
 })
 
-let draggedSect, clonedSect, clonedNode, draggedNode, offset;
+let draggedSect, clonedSect, clonedNode, draggedNode;
 
 const updateClonedSectPos = throttle(e => {
   if (!clonedSect) return;
-  clonedSect.style.top = e.pageY - offset.y + 'px';
-  clonedSect.style.left = e.pageX - offset.x + 'px';
+  clonedSect.style.top = e.pageY - 40 + 'px';
+  clonedSect.style.left = e.pageX - 10 + 'px';
 });
 
 const updateClonedNodePos = throttle(e => {
   if (!clonedNode) return;
-  clonedNode.style.top = e.pageY - offset.y + 'px';
-  clonedNode.style.left = e.pageX - offset.x + 'px';
+  clonedNode.style.top = e.pageY - 40 + 'px';
+  clonedNode.style.left = e.pageX - 10 + 'px';
 });
 
 document.body.addEventListener('mousedown', e => {
@@ -56,10 +56,10 @@ document.body.addEventListener('mousedown', e => {
 
 document.body.addEventListener('mousemove', e => {
   if (clonedSect || clonedNode) {
-    if ((e.clientX <= mainContainerRect.right) &&
-      (e.clientX >= mainContainerRect.left) &&
-      (e.clientY <= mainContainerRect.bottom) &&
-      (e.clientY >= mainContainerRect.top)
+    if ((e.pageX <= mainContainerRect.right) &&
+      (e.pageX >= mainContainerRect.left) &&
+      (e.pageY <= mainContainerRect.bottom) &&
+      (e.pageY >= mainContainerRect.top)
     ) {
       if (clonedSect) {
         updateClonedSectPos(e);
@@ -83,13 +83,10 @@ document.body.addEventListener('mouseup', e => {
   document.querySelectorAll('.drop-zone-indicator').forEach(zone => zone.classList.remove('active'));
 
   if (draggedSect &&
-    !(e.target.classList.contains('more-opt')
-      || e.target.closest('.more-opt'))
-    && !(e.target.closest('.tooltip')
-      || e.target.classList.contains('tooltip'))
+    !(e.target.classList.contains('more-opt') || e.target.closest('.more-opt')) &&
+    !(e.target.closest('.tooltip') || e.target.classList.contains('tooltip'))
   ) {
     const closestSec = getClosestSect(clonedSect.getBoundingClientRect());
-
     clonedSect.remove();
 
     draggedSect.style.opacity = '1';
@@ -98,35 +95,14 @@ document.body.addEventListener('mouseup', e => {
     if (closestSec?.closest) {
       setTimeout(() => {
         requestAnimationFrame(() => {
-
           const closestRec = closestSec.closest.getBoundingClientRect(),
             draggedRec = draggedSect.getBoundingClientRect();
 
-          // Change Order Visually
-          const translateX = closestRec.left - draggedRec.left,
-            translateY = closestRec.top - draggedRec.top;
-
-          draggedSect.style.translate = `${translateX}px ${translateY}px`;
-          closestSec.closest.style.translate = `${translateX * -1}px ${translateY * -1}px`;
-
-
-          setTimeout(() => {
-            const holder = document.createElement('div');
-
-            // Change order In DOM
-            draggedSect.replaceWith(holder);
-            closestSec.closest.replaceWith(draggedSect);
-            holder.replaceWith(closestSec.closest);
-
-            // Reset Translate Property Value
-            draggedSect.style.translate = '0px 0px';
-            closestSec.closest.style.translate = '0px 0px';
-
-            resetSect();
-          }, animation_duration)
-
-          // Change Order In The Array
+          translateElements(closestRec.left, closestRec.top, draggedRec.left, draggedRec.top, closestSec.closest, draggedSect);
           changeSectionsOrder(users.activeBoardId, +draggedSect.dataset.sectionId, +closestSec.closest.dataset.sectionId);
+          changeDOMPos('def', draggedSect, closestSec.closest);
+
+          setTimeout(resetSect, animation_duration);
         })
       }, 30)
     } else resetSect();
@@ -140,91 +116,62 @@ document.body.addEventListener('mouseup', e => {
 
     document.body.classList.remove('grabbing');
     clonedNode.remove();
+
     if (draggedNode) {
       draggedNode.style.opacity = '1';
       draggedNode.style.pointerEvents = 'all';
     }
 
-    console.log(draggedNode, closestNode, closestSect)
+    const closestObj = getClosestObj(closestSect, closestZone, closestNode),
+      draggedNodeSectId = +draggedNode.dataset.sectionId,
+      draggedNodeId = +draggedNode.dataset.nodeId;
 
-    // The Node Is The Closest
-    if ((closestSect.distanceAway + 30) > closestNode.distanceAway && closestZone.distanceAway > closestNode.distanceAway) {
+    if (closestObj.name === 'node') {
+      console.log('%cNode Is Closest', 'font-size: 18px; color: red; font-weight:bold');
 
-      const translateX = closestNode.closestLeft - closestNode.draggedLeft,
-        translateY = closestNode.closestTop - closestNode.draggedTop;
-      console.log(translateX, translateY)
+      const closestNodeSectId = +closestNode.closestNode.dataset.sectionId,
+        closestNodeId = +closestNode.closestNode.dataset.nodeId;
 
       requestAnimationFrame(() => {
+        if (closestNodeSectId === draggedNodeSectId) {
+          swapNodesInSameSection(users.activeBoardId, draggedNodeSectId, draggedNodeId, closestNodeId);
+        } else {
+          swapNodesBetweenSections(users.activeBoardId, closestNodeSectId, closestNodeId, draggedNodeSectId, draggedNodeId);
 
-        // Swap Visually
-        draggedNode.style.translate = `${translateX}px ${translateY}px`;
-        closestNode.closestNode.style.translate = `${translateX * -1}px ${translateY * -1}px`;
+          draggedNode.dataset.sectionId = closestNodeSectId;
+          closestNode.closestNode.dataset.sectionId = draggedNodeSectId;
+        }
 
-        // Swap In Array
-        const closestSecId = +closestNode.closestNode.dataset.sectionId,
-          draggedSecId = +draggedNode.dataset.sectionId,
-          draggedNodeId = +draggedNode.dataset.nodeId,
-          closestNodeId = +closestNode.closestNode.dataset.nodeId;
+        translateElements(closestNode.closestLeft, closestNode.closestTop, closestNode.draggedLeft, closestNode.draggedTop, closestNode.closestNode, draggedNode);
+        changeDOMPos(closestObj.name, draggedNode, closestNode.closestNode, [closestSect, closestZone, closestNode]);
 
-        changeNodePosition(users.activeBoardId, closestSecId, draggedSecId, closestNodeId);
+        setTimeout(resetSect, animation_duration, false);
+      });
 
-        changeNodePosition(users.activeBoardId, draggedSecId, closestSecId, draggedNodeId);
+    }
+    else {
+      console.log(`%c${closestObj.name} Is Closest`, 'font-size: 18px; color: red; font-weight:bold');
+      const closestSecId = +closestZone.closestZone.closest('.list').dataset.sectionId;
 
-        closestNode.closestNode.dataset.sectionId = draggedSecId;
+
+      const coords = { left: closestNode.draggedLeft || 0, top: closestNode.draggedTop || 0 };
+
+      if (closestObj.name === 'zone') {
+
+        changeNodePosition(users.activeBoardId, draggedNodeSectId, +closestZone.closestZone.closest('.list').dataset.sectionId, draggedNodeId);
+
+        changeDOMPos(closestObj.name, draggedNode, closestZone.closestZone.closest('.list'), coords);
+
         draggedNode.dataset.sectionId = closestSecId;
 
-        setTimeout(() => {
-          draggedNode ? draggedNode.style.translate = `0px 0px` : console.error('no Dragged Node in 177');
-          closestNode.closestNode.style.translate = `0px 0px`;
+      } else {
+        changeNodePosition(users.activeBoardId, draggedNodeSectId, +closestSect.closest.dataset.sectionId, draggedNodeId);
 
-          // Swap In DOM
-          const holder = document.createElement('div');
-          holder.className = 'task backdrop-blur-md grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-43 overflow-y-auto truncate max-w-full transition-colors outline-3 outline-transparent hover:outline-zinc-100';
-
-          draggedNode.replaceWith(holder);
-          closestNode.closestNode.replaceWith(draggedNode);
-          holder.replaceWith(closestNode.closestNode);
-
-          draggedNode.style.cssText = '';
-          resetSect(false);
-        }, animation_duration)
-      })
-    }
-
-    // Section Is The Closest
-    else {
-      if (closestZone.closestZone) {
-
-        const secTrello = closestSect.closest.querySelector('.trello'),
-          holder = document.createElement('div');
-
-        holder.className = 'task grid bg-emerald-500/30 p-3 rounded-md h-fit max-h-32 overflow-y-auto truncate cursor-pointer animate-grow transition duration-200 outline-3 outline-transparent hover:outline-zinc-100 scale-y-0 origin-top opacity-0';
-
-        secTrello.append(holder);
-
-        // Get Holder Div Rect For Animation
-        const holderRect = holder.getBoundingClientRect();
-
-        // Swap Visually
-        const translateX = holderRect.left - closestNode.draggedLeft,
-          translateY = holderRect.top - closestNode.draggedTop;
-
-        requestAnimationFrame(() => {
-          draggedNode.style.translate = `${translateX}px ${translateY}px`;
-
-          setTimeout(() => {
-            draggedNode.style.translate = '0px 0px';
-
-            // Swap In DOM
-            holder.replaceWith(draggedNode);
-
-            // change Array
-            changeNodePosition(users.activeBoardId, +draggedNode.dataset.sectionId, +closestSect.closest.dataset.sectionId, +draggedNode.dataset.nodeId);
-
-            resetSect(false);
-          }, animation_duration);
-        })
+        changeDOMPos(closestObj.name, draggedNode, closestSect.closest, coords);
+        draggedNode.dataset.sectionId = +closestSect.closest.dataset.sectionId;
       }
+
+      setTimeout(resetSect, animation_duration, false);
     }
   }
 });
@@ -255,11 +202,10 @@ function getClosestSect(eleDimensions) {
 }
 
 function getClosestNode(clonedDims) {
-  if (!draggedNode) return { closestNode: null, closestLeft: null, closestTop: null, draggedLeft: 0, draggedTop: 0 };
-
+  if (!draggedNode) return { closestNode: null, closestLeft: null, closestTop: null, draggedLeft: 0, draggedTop: 0, distanceAway: Infinity };
 
   const nodes = [...document.querySelectorAll('.task')],
-    draggedRect = draggedNode?.getBoundingClientRect(),
+    draggedRect = draggedNode.getBoundingClientRect(),
     clonedCenterX = clonedDims.left + clonedDims.width / 2,
     clonedCenterY = clonedDims.top + clonedDims.height / 2,
     infoObj = {
@@ -268,7 +214,7 @@ function getClosestNode(clonedDims) {
       closestTop: null,
       draggedLeft: draggedRect.left,
       draggedTop: draggedRect.top,
-      distanceAway: null
+      distanceAway: Infinity
     };
 
   let minDistance = Infinity;
@@ -279,17 +225,14 @@ function getClosestNode(clonedDims) {
     const nodeRect = node.getBoundingClientRect(),
       nodeCenterX = nodeRect.left + nodeRect.width / 2,
       nodeCenterY = nodeRect.top + nodeRect.height / 2,
-      distance = Math.hypot(
-        clonedCenterX - nodeCenterX,
-        clonedCenterY - nodeCenterY
-      );
+      distance = Math.hypot(clonedCenterX - nodeCenterX, clonedCenterY - nodeCenterY);
 
     if (distance < minDistance) {
-      minDistance = distance,
-        infoObj.closestNode = node,
-        infoObj.closestLeft = nodeRect.left,
-        infoObj.closestTop = nodeRect.top,
-        infoObj.distanceAway = distance;
+      minDistance = distance;
+      infoObj.closestNode = node;
+      infoObj.closestLeft = nodeRect.left;
+      infoObj.closestTop = nodeRect.top;
+      infoObj.distanceAway = distance;
     }
   }
 
@@ -297,14 +240,15 @@ function getClosestNode(clonedDims) {
 }
 
 function getClosestZone(clonedDims) {
-  if (!draggedNode) return { closestZone: null, distanceAway: null };
+  if (!draggedNode) return { closestZone: null, distanceAway: Infinity };
 
   const zones = [...document.querySelectorAll('.drop-zone-indicator')],
     clonedCenterX = clonedDims.left + clonedDims.width / 2,
     clonedCenterY = clonedDims.top + clonedDims.height / 2,
     infoObj = {
       closestZone: null,
-      distanceAway: null
+      distanceAway: Infinity,
+      rect: null
     };
 
   let minDistance = Infinity;
@@ -323,11 +267,80 @@ function getClosestZone(clonedDims) {
     if (distance < minDistance) {
       minDistance = distance,
         infoObj.closestZone = zone,
-        infoObj.distanceAway = distance;
+        infoObj.distanceAway = distance,
+        infoObj.rect = zoneRect;
     }
   }
 
   return infoObj;
+}
+
+function translateElements(closestLeft, closestTop, draggedLeft, draggedTop, closest, dragged) {
+  if (!(closestLeft && closestTop && draggedLeft && draggedTop))
+    throw new Error(`Missing Dimension: ${closestLeft}, ${closestTop}, ${draggedLeft}, ${draggedTop}, ${dragged}, ${closest}`);
+
+  const translateX = closestLeft - draggedLeft,
+    translateY = closestTop - draggedTop;
+
+  dragged.style.translate = `${translateX}px ${translateY}px`;
+  if (closest) closest.style.translate = `${translateX * -1}px ${translateY * -1}px`;
+
+  setTimeout(() => {
+    // Reset Translate
+    dragged.style.translate = '0px 0px';
+    if (closest) closest.style.translate = '0px 0px';
+  }, animation_duration);
+}
+
+function changeDOMPos(name = 'def', dragged, closest, rect = null) {
+  // Section by section OR Node By Node
+  if (name === 'def' || name === 'node') {
+    const holder = document.createElement('div');
+
+    setTimeout(() => {
+      dragged.replaceWith(holder);
+      closest.replaceWith(dragged);
+      holder.replaceWith(closest);
+    }, animation_duration);
+
+    // Node To Zone | Node To Section
+  } else {
+    let section = closest.querySelector('.trello');
+    const holder = document.createElement('div');
+
+    holder.className = 'opacity-0 p-3 rounded-md h-fit max-h-43 overflow-y-auto truncate max-w-full transition-all duration-200 scale-y-0';
+
+    section.append(holder);
+
+    const holderRect = holder.getBoundingClientRect();
+
+    translateElements(holderRect.left, holderRect.top, rect.left, rect.top, null, dragged);
+
+    holder.classList.replace('scale-y-0', 'scale-y-100');
+
+    setTimeout(() => holder.replaceWith(dragged), animation_duration);
+  }
+}
+
+function getClosestObj(section, zone, node) {
+  let name = null
+
+  // Node Is The Closest
+  if ((section.distanceAway + 50) >= node.distanceAway && zone.distanceAway >= node.distanceAway) {
+    name = 'node';
+
+    // Zone Is Closest
+  } else if ((section.distanceAway + 50) >= zone.distanceAway && node.distanceAway > zone.distanceAway) {
+    name = 'zone';
+
+    // Section Is the Closest
+  } else {
+    name = 'sec';
+  }
+
+  return {
+    name
+  }
 }
 
 function createClonedEle(ele, e) {
@@ -341,11 +354,6 @@ function createClonedEle(ele, e) {
   ele.style.opacity = '0';
   ele.style.pointerEvents = 'none';
 
-  // Update Offset Var
-  offset = {
-    x: e.offsetX,
-    y: e.offsetY
-  }
 
   // Cloned Element Styling
   clonedEle.style.position = 'absolute';

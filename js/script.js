@@ -348,7 +348,22 @@ document.body.addEventListener('click', e => {
             </svg>
             Add a card
           </button>
-        </div>`;
+        </div>
+
+        <button
+          class="add-list flex items-center p-2 bg-[hsl(from_var(--clr-accent-400)_h_s_l/.2)] gap-1 max-h-fit rounded-md border-2 border-green-100/20 justify-center cursor-pointer max-w-155"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#FFFFFF"
+          >
+            <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+          </svg>
+          Add new column
+        </button>`;
 
     document.startViewTransition(() => {
       mainContainer.lastElementChild.remove();
