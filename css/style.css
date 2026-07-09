@@ -271,6 +271,9 @@
   .left-0 {
     left: 0;
   }
+  .left-\[-10px\] {
+    left: -10px;
+  }
   .left-\[50\%\] {
     left: 50%;
   }
@@ -1647,6 +1650,21 @@
   .sm\:static {
     @media (width >= 40rem) {
       position: static;
+    }
+  }
+  .sm\:left-\[-57px\] {
+    @media (width >= 40rem) {
+      left: -57px;
+    }
+  }
+  .sm\:left-\[-58px\] {
+    @media (width >= 40rem) {
+      left: -58px;
+    }
+  }
+  .sm\:left-\[-60px\] {
+    @media (width >= 40rem) {
+      left: -60px;
     }
   }
   .sm\:flex {
