@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Trello Clone - Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="css/style.css"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      rel="icon"
+      href="images/logo.svg"
+    />
+  </head>
+
+  <body class="bg-[#091413] text-white overflow-x-hidden min-h-dvh">
+    <header>
+      <div class="max-w-350 mx-auto p-4 flex justify-between items-center">
+
+      <h1
+        class="text-lg md:text-2xl  flex gap-2 font-bold text-(--clr-accent-400) cursor-pointer items-center me-auto animate-[bright_6s_infinite_alternate] max-w-fit">
+        <img
+          src="images/logo.svg"
+          alt="logo"
+          width="32"
+          height="32"
+          class="scale-[70%] md:scale-[100%]"
+        />
+        Trello Clone
+      </h1>
+
+      <button type="button" class="p-3 outline-3 outline-transparent transition-colors hover:bg-zinc-500/30 rounded-md cursor-pointer flex items-center gap-2 text-lg font-medium">
+
+        <img src="images/trello-2.svg" width="27" height="27" alt="trello img">
+
+        Trello
+      </button>
+
+      <div class="account relative ms-auto">
+        <div
+          class="profile-icon aspect-square w-12 rounded-[50%] bg-purple-600 flex place-items-center justify-center cursor-pointer [&:has(+_.active)]:outline-4 [&:has(+_.active)]:outline-gray-500/60 [&:has(+_.active)]:outline-offset-1 uppercase"
+        >
+          J
+        </div>
+        <ul
+          class="profile absolute top-[113%] right-0 rounded-md bg-zinc-500/30 border border-zinc-500/70 backdrop-blur-lg grid *:py-4 *:px-3 *:font-medium transition-[transform,opacity] scale-y-100 pointer-events-none opacity-0 [&.active]:pointer-events-auto [&.active]:opacity-100 [&.active]:scale-y-100 origin-top-right [&.active]:z-50 *:transition-colors *:rounded-md [&_>_*:hover]:bg-zinc-300/20 *:cursor-pointer *:text-sm min-w-40"
+        >
+          <li class="dashboard" onclick="window.location.href = './dashboard.html'">Dashboard</li>
+          <li class="logout flex items-center justify-between text-rose-300">
+            Logout
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              class="fill-rose-300"
+              width="24px"
+            >
+              <path
+                d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+              />
+            </svg>
+          </li>
+        </ul>
+      </div>
+      </div>
+
+    </header>
+
+    <main>
+      
+    </main>
+
+    <footer>
+      
+    </footer>
+  </body>
+</html>

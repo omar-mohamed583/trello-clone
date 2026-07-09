@@ -14,8 +14,7 @@ const observer = new MutationObserver(muts => {
 });
 
 observer.observe(mainContainer, {
-  childList: true,
-  subtree: true
+  childList: true
 })
 
 let draggedSect, clonedSect, clonedNode, draggedNode;
@@ -304,11 +303,12 @@ function changeDOMPos(name = 'def', dragged, closest, rect = null) {
     }, animation_duration);
 
     // Node To Zone | Node To Section
-  } else {
+  }
+  else {
     let section = closest.querySelector('.trello');
     const holder = document.createElement('div');
 
-    holder.className = 'opacity-0 p-3 rounded-md h-fit max-h-43 overflow-y-auto truncate max-w-full transition-all duration-200 scale-y-0';
+    holder.className = 'opacity-0 p-3 rounded-md max-h-43 overflow-y-auto truncate max-w-full scale-y-0';
 
     section.append(holder);
 
@@ -354,13 +354,16 @@ function createClonedEle(ele, e) {
   ele.style.opacity = '0';
   ele.style.pointerEvents = 'none';
 
-
   // Cloned Element Styling
   clonedEle.style.position = 'absolute';
   clonedEle.style.top = e.pageY - e.offsetY + 'px';
   clonedEle.style.left = e.pageX - e.offsetX + 'px';
   clonedEle.style.width = draggedRect.width + 'px';
   clonedEle.style.height = draggedRect.height + 'px';
+
+  // Replace Some Classes
+  clonedEle.classList.replace('transition-all', 'transition-[translate,left,top,outline-color]');
+  clonedEle.classList.add('ease-linear');
 
   // Append Cloned Ele To Body
   document.body.append(clonedEle);

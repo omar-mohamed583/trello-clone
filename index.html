@@ -44,20 +44,22 @@
         class="container flex px-2 lg:px-6 py-6 justify-center max-w-[1700px] mx-auto gap-6 items-center"
       >
         <h1
-          class="text-2xl flex gap-2 font-bold text-(--clr-accent-400) cursor-pointer items-center me-auto animate-[bright_6s_infinite_alternate] max-w-fit"
+          class="text-lg md:text-2xl  flex gap-2 font-bold text-(--clr-accent-400) cursor-pointer items-center me-auto animate-[bright_6s_infinite_alternate] max-w-fit"
         >
           <img
             src="images/logo.svg"
             alt="logo"
             width="32"
             height="32"
+            class="scale-[70%] md:scale-[100%]"
           />
           Trello Clone
         </h1>
 
         <div class="boards grid relative max-w-fit">
           <button
-            class="menu-toggler sm:hidden flex items-center gap-1 [&.active_svg]:rotate-180"
+            onclick="this.nextElementSibling.classList.toggle('active');this.nextElementSibling.classList.toggle('hidden'); this.classList.toggle('active')"
+            class="menu-toggler cursor-pointer sm:hidden flex items-center gap-1 [&.active_svg]:rotate-180 rounded-md transition-colors hover:bg-zinc-300/20 p-2 [div:has(+_.active)_>_&]:outline-4 outline-gray-500 [div:has(+_.active)_>_&]:bg-zinc-300/20"
           >
             Boards
             <svg
@@ -70,9 +72,9 @@
               <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
             </svg>
           </button>
-          <div class="hidden gap-4 *:cursor-pointer sm:flex">
+          <div class="hidden gap-4 *:cursor-pointer sm:flex sm:static absolute top-[108%] right-0 bg-zinc-500/50 border border-zinc-500/70 sm:border-0 sm:bg-transparent backdrop-blur-lg rounded-md p-2 z-50">
             <button
-              class="toggle-boards tracking-wide flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [div:has(+_.active)_>_&]:outline-4 outline-gray-500 [div:has(+_.active)_>_&]:bg-zinc-300/20 [div:has(+_.active)_>_&_svg]:rotate-180"
+              class="toggle-boards tracking-wide flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [div:has(~_.active)_>_&]:outline-4 outline-gray-500 [div:has(~_.active)_>_&]:bg-zinc-300/20 [div:has(~_.active)_>_&_svg]:rotate-180 justify-between"
             >
               Boards
               <svg
@@ -89,7 +91,7 @@
               </svg>
             </button>
             <button
-              class="add-board flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 [&:has(+_.active)]:outline-4 [&:has(+_.active)]:outline-gray-500/50"
+              class="add-board flex items-center p-2 rounded-md transition-colors hover:bg-zinc-300/20 gap-1 min-w-max"
             >
               Add New Board
               <svg
@@ -104,12 +106,13 @@
                 />
               </svg>
             </button>
+            <ul
+              class="board-list absolute scale-y-70 pointer-events-none opacity-0 transition-
+            [transform,opacity] origin-top-right [&.active]:pointer-events-auto [&.active]:scale-y-100 [&.active]:opacity-100 duration-100 left-0 top-[105%] rounded-md bg-zinc-500/60 border border-zinc-500/70 min-h-12 grid *:p-3 *:cursor-pointer *:w-56 *:transition-colors [&_>_*:not(.no-boards):hover]:hover:bg-zinc-300/20 *:flex *:justify-between z-50 *:rounded-md backdrop-blur-lg"
+            >
+              <li class="no-boards">No boards to show.</li>
+            </ul>
           </div>
-          <ul
-            class="board-list absolute scale-y-0 transition-transform origin-top [&.active]:scale-y-100 duration-100 left-0 top-[115%] rounded-md bg-zinc-500/30 border border-zinc-500/70 min-h-12 grid *:p-3 *:cursor-pointer *:w-56 *:transition-colors [&_>_*:not(.no-boards):hover]:hover:bg-zinc-300/20 *:flex *:justify-between z-50 *:rounded-md backdrop-blur-lg"
-          >
-            <li class="no-boards">No boards to show.</li>
-          </ul>
         </div>
 
         <div class="account relative ms-auto">
@@ -119,10 +122,12 @@
             J
           </div>
           <ul
-            class="profile absolute top-[113%] right-0 rounded-md bg-zinc-500/30 border border-zinc-500/70 backdrop-blur-lg grid *:py-4 *:px-3 *:font-medium transition-transform scale-y-0 [&.active]:scale-y-100 origin-top [&.active]:z-50 min-w-max *:transition-colors *:rounded-md [&_>_*:hover]:bg-zinc-300/20 *:cursor-pointer *:text-sm"
+            class="profile absolute top-[113%] right-0 rounded-md bg-zinc-500/30 border border-zinc-500/70 backdrop-blur-lg grid *:py-4 *:px-3 *:font-medium transition-[transform,opacity] scale-y-100 pointer-events-none opacity-0 [&.active]:pointer-events-auto [&.active]:opacity-100 [&.active]:scale-y-100 origin-top-right [&.active]:z-50 *:transition-colors *:rounded-md [&_>_*:hover]:bg-zinc-300/20 *:cursor-pointer *:text-sm min-w-40"
           >
-            <li class="edit">Edit personal details</li>
-            <li class="dashboard">Dashboard</li>
+            <li class="dashboard flex items-center justify-between" onclick="window.location.href = './dashboard.html'">
+              Dashboard
+              <img src="images/icons8-analytics-35.png" width="27" height="27" alt="Logo">
+            </li>
             <li class="logout flex items-center justify-between text-rose-300">
               Logout
               <svg

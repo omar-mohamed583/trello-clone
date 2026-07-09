@@ -229,7 +229,7 @@ document.body.addEventListener('click', e => {
       { sectionId } = btn.closest('.list').dataset;
 
     showLoading(btn, () => {
-      const nodeId = addNode(activeBoardId, +sectionId, 'Add title', 'low', 'Add description', `${new Date().getDate()}, ${new Date().toLocaleString("en-US", { month: "short" })}`, 'Add tag');
+      const nodeId = addNode(activeBoardId, +sectionId, 'Add title', 'low', 'Add description', new Date().toISOString().slice(0, 10), 'Add tag');
 
       trello.insertAdjacentHTML('afterbegin', `
               <div
@@ -251,7 +251,7 @@ document.body.addEventListener('click', e => {
               <ul class="flex truncate max-w-3/5 *:lowercase *:p-1 *:rounded-sm gap-1 last:mr-2">
                 <li class="flex items-center bg-zinc-500 p-1 rounded-sm content-center text-sm leading-[normal]">Add tag</li>
               </ul>
-              <span class="due-date flex items-center content-center text-zinc-200 text-sm leading-[normal]">${new Date().getDate()}, ${new Date().toLocaleString("en-US", { month: "short" })}</span>
+              <span class="due-date flex items-center content-center text-zinc-200 text-sm leading-[normal]">${formatDate(new Date().toISOString().slice(0, 10))}</span>
             </div>
           </div>`);
 
@@ -578,13 +578,20 @@ nodeDetailsDialog?.querySelector('.prio-picker')?.addEventListener('click', e =>
   }
 });
 
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(`${dateStr}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return dateStr;
+  return `${d.getDate()}, ${d.toLocaleString('en-US', { month: 'short' })}`;
+}
+
 function validateNodeDetails(dialog) {
   const titleInput = dialog?.querySelector('input[name="title"]');
   const descriptionInput = dialog?.querySelector('textarea[name="description"]');
   const dueDateInput = dialog?.querySelector('input[name="dueDate"]');
   const title = titleInput?.value.trim() || '';
   const description = descriptionInput?.value.trim() || '';
-  const dueDate = dueDateInput?.value || '';
+  const dueDate = dueDateInput?.value;
   const tags = getDialogTags(dialog);
 
   if (!title) return 'Task title is required.';
@@ -644,7 +651,7 @@ function saveNodeDetails(dialog) {
       taskPriority.textContent = node.priority;
       taskPriority.className = `priority inline-block leading-[normal] content-center text-sm p-1 rounded-sm ${node.priority === 'high' ? 'bg-rose-400' : node.priority === 'medium' ? 'bg-orange-400' : 'bg-yellow-400'}`;
     }
-    if (taskDueDate) taskDueDate.textContent = node.dueDate;
+    if (taskDueDate) taskDueDate.textContent = formatDate(node.dueDate);
     if (taskTags) {
       taskTags.innerHTML = node.tags && node.tags.length
         ? node.tags.map(tag => `<li class="flex max-w-full items-center break-all rounded-sm bg-zinc-500 p-1 text-sm leading-[normal]">${tag}</li>`).join('')
@@ -873,7 +880,7 @@ function displayNodes(nodes) {
             ${node.tags && node.tags.length ? node.tags.map(tag => `<li class="flex items-center text-sm leading-[normal] bg-zinc-500 p-1 rounded-sm content-center"><span class="truncate max-w-16">${tag}</span></li>`).join('') : ''}
           </p>
         </ul>
-        <span class="due-date flex items-center content-center text-zinc-200 text-sm leading-[normal]">${node.dueDate}</span>
+        <span class="due-date flex items-center content-center text-zinc-200 text-sm leading-[normal]">${formatDate(node.dueDate)}</span>
       </div>
     </div>`
   });
