@@ -268,8 +268,20 @@
   .right-0 {
     right: 0;
   }
+  .-left-2 {
+    left: calc(var(--spacing) * -2);
+  }
+  .-left-2\.5 {
+    left: calc(var(--spacing) * -2.5);
+  }
   .left-0 {
     left: 0;
+  }
+  .left-2 {
+    left: calc(var(--spacing) * 2);
+  }
+  .left-2\.5 {
+    left: calc(var(--spacing) * 2.5);
   }
   .left-\[-10px\] {
     left: -10px;
@@ -1650,6 +1662,11 @@
   .sm\:static {
     @media (width >= 40rem) {
       position: static;
+    }
+  }
+  .sm\:-left-15 {
+    @media (width >= 40rem) {
+      left: calc(var(--spacing) * -15);
     }
   }
   .sm\:left-\[-57px\] {
