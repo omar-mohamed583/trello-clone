@@ -514,6 +514,9 @@
   .max-w-\[1700px\] {
     max-width: 1700px;
   }
+  .max-w-\[1900px\] {
+    max-width: 1900px;
+  }
   .max-w-fit {
     max-width: fit-content;
   }

@@ -197,7 +197,7 @@ submitOtpBtn.addEventListener('click', () => {
 
     dia.close();
 
-    window.location.href = '../index.html';
+    window.location.href = './index.html';
   } else {
     showErr('Incorrect OTP');
   }
