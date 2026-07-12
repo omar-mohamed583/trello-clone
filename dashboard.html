@@ -1,103 +1,299 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Trello Clone - Dashboard</title>
-    <link
-      rel="stylesheet"
-      href="css/style.css"
-    />
-    <link
-      rel="preconnect"
-      href="https://fonts.googleapis.com"
-    />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin
-    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap"
       rel="stylesheet"
     />
     <link
-      rel="preconnect"
-      href="https://fonts.googleapis.com"
+      href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+      rel="stylesheet"
     />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin
-    />
-    <link
-      rel="icon"
-      href="images/logo.svg"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" href="images/logo.svg" />
   </head>
 
-  <body class="bg-[#091413] text-white overflow-x-hidden min-h-dvh">
-    <header>
-      <div class="max-w-[1900px] mx-auto p-4 flex justify-between items-center">
-
-      <h1
-        class="text-lg md:text-2xl  flex gap-2 font-bold text-(--clr-accent-400) cursor-pointer items-center me-auto animate-[bright_6s_infinite_alternate] max-w-fit">
-        <img
-          src="images/logo.svg"
-          alt="logo"
-          width="32"
-          height="32"
-          class="scale-[70%] md:scale-[100%]"
-        />
-        Trello Clone
-      </h1>
-
-      <button type="button" class="p-3 outline-3 outline-transparent transition-colors hover:bg-zinc-500/30 rounded-md cursor-pointer flex items-center gap-2 text-lg font-medium">
-
-        <img src="images/trello-2.svg" width="27" height="27" alt="trello img">
-
-        Trello
-      </button>
-
-      <div class="account relative ms-auto">
-        <div
-          class="profile-icon aspect-square w-12 rounded-[50%] bg-purple-600 flex place-items-center justify-center cursor-pointer [&:has(+_.active)]:outline-4 [&:has(+_.active)]:outline-gray-500/60 [&:has(+_.active)]:outline-offset-1 uppercase"
+  <body
+    class="bg-[#091413] text-white  min-h-dvh tabular-nums"
+  >
+    <header class="fixed inset-[0_0_auto_0] bg-(--clr-accent-200) z-100000">
+      <div
+        class="max-w-[1900px] mx-auto p-6 sm:px-2  flex justify-between items-center"
+      >
+        <h1
+          class="text-lg md:text-2xl flex gap-2 font-bold text-(--clr-accent-400) cursor-pointer items-center me-auto animate-[bright_6s_infinite_alternate] max-w-fit"
         >
-          J
+          <img
+            src="images/logo.svg"
+            alt="logo"
+            width="32"
+            height="32"
+            class="scale-[70%] md:scale-[100%]"
+          />
+          Trello Clone
+        </h1>
+
+        <button
+          type="button"
+          tabindex="1"
+          onclick="window.location.href = './index.html'"
+          class="p-3 outline-3 outline-transparent transition-colors hover:bg-zinc-400/40 rounded-md cursor-pointer flex items-center gap-2 sm:text-lg font-medium relative -left-17 text-md [@media(max-width:500px)]:-left-3 focus-visible:outline-gray-500/60 focus-visible:outline-4 focus-visible:outline-offset-1"
+        >
+          <img
+            src="images/trello-2.svg"
+            width="27"
+            height="27"
+            alt="trello img"
+          />
+          Trello
+        </button>
+
+        <div class="account relative ms-auto">
+          <div
+            class="profile-icon aspect-square w-12 rounded-[50%] bg-purple-600 flex place-items-center justify-center cursor-pointer [&:has(+_.active)]:outline-4 [&:has(+_.active)]:outline-gray-500/60 [&:has(+_.active)]:outline-offset-1 uppercase"
+          >
+            J
+          </div>
+          <ul
+            class="profile absolute top-[113%] right-0 rounded-md bg-zinc-500/30 border border-zinc-500/70 backdrop-blur-lg grid *:py-4 *:px-3 *:font-medium transition-[transform,opacity] scale-y-100 pointer-events-none opacity-0 [&.active]:pointer-events-auto [&.active]:opacity-100 [&.active]:scale-y-100 origin-top-right [&.active]:z-50 *:transition-colors *:rounded-md [&_>_*:hover]:bg-zinc-300/20 *:cursor-pointer *:text-sm min-w-40"
+          >
+            <li class="logout flex items-center justify-between text-rose-300">
+              Logout
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                class="fill-rose-300"
+                width="24px"
+              >
+                <path
+                  d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+                />
+              </svg>
+            </li>
+          </ul>
         </div>
-        <ul
-          class="profile absolute top-[113%] right-0 rounded-md bg-zinc-500/30 border border-zinc-500/70 backdrop-blur-lg grid *:py-4 *:px-3 *:font-medium transition-[transform,opacity] scale-y-100 pointer-events-none opacity-0 [&.active]:pointer-events-auto [&.active]:opacity-100 [&.active]:scale-y-100 origin-top-right [&.active]:z-50 *:transition-colors *:rounded-md [&_>_*:hover]:bg-zinc-300/20 *:cursor-pointer *:text-sm min-w-40"
-        >
-          <li class="dashboard" onclick="window.location.href = './dashboard.html'">Dashboard</li>
-          <li class="logout flex items-center justify-between text-rose-300">
-            Logout
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              class="fill-rose-300"
-              width="24px"
-            >
-              <path
-                d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
-              />
-            </svg>
-          </li>
-        </ul>
       </div>
-      </div>
-
     </header>
 
-    <main>
-      
+    <main class="grid-cont max-w-[1900px] grid p-4 gap-10 pt-39 mx-auto">
+      <section
+        class="animate welcome-div grid gap-1 border border-green-600/50 p-7 rounded-lg bg-green-600/30 backdrop-blur-sm overflow-hidden relative"
+        data-bg="#00ff80"
+      >
+        <h2 class="text-4xl leading-[normal] font-bold">
+          Good <span class="time">Afternoon</span>, Omar
+        </h2>
+        <p class="text-gray-300 text-md">
+          You have <span class="tasks-today">7</span> tasks today
+        </p>
+
+        <button
+          type="button"
+          class="max-w-fit bg-purple-500/40 p-2 px-3 mt-8 border border-purple-400/20 rounded-md cursor-pointer flex items-center gap-1 transition-colors hover:bg-purple-500 duration-300 focus-visible:bg-purple-500"
+        >
+          See analytics
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#fff"
+          >
+            <path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
+          </svg>
+        </button>
+
+        <div
+          class="des-div absolute rounded-full bg-emerald-500 h-70 w-40 right-60 top-[60%] backdrop-blur-lg border border-emerald-400"
+        ></div>
+        <div
+          class="des-div absolute rounded-full bg-emerald-600 h-70 w-40 right-30 top-[40%] backdrop-blur-lg border border-emerald-400/30"
+        ></div>
+        <div
+          class="des-div absolute rounded-full bg-emerald-700 h-70 w-40 right-0 top-[20%] backdrop-blur-lg border border-emerald-400/30"
+        ></div>
+      </section>
+
+      <aside
+        class="animate calender bg-[#408a7154] rounded-lg max-h-fit p-5 border border-zinc-400/50 grid gap-6 backdrop-blur-md grid-rows-[auto_1fr]"
+        data-bg="#00ffa9"
+      >
+        <span class="font-medium text-2xl leading-[normal]">Calender</span>
+
+        <div class="date gap-3 flex flex-col">
+          <div
+            class="flex justify-between items-center gap-2 [&>button:hover]:bg-zinc-400/40 [&>button]:transition-colors [&>button]:cursor-pointer"
+          >
+            <button
+              type="button"
+              class="aspect-square p-2 border border-zinc-500/40 rotate-180 rounded-md"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#fff"
+              >
+                <path
+                  d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"
+                />
+              </svg>
+            </button>
+
+            <span class="month capitalize font-medium">May 2025</span>
+
+            <button
+              type="button"
+              class="aspect-square p-2 border border-zinc-500/40 rounded-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#fff"
+              >
+                <path
+                  d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <ul class="days grid grid-cols-7 gap-4">
+            <!-- Thu -->
+            <li class="flex flex-col gap-2">
+              <span class="text-sm text-gray-300 text-center">Thu</span>
+              <ul class="grid *:flex *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+                <li>1</li>
+                <li>8</li>
+                <li>15</li>
+                <li>22</li>
+                <li>29</li>
+              </ul>
+            </li>
+            <!-- Fri -->
+            <li class="flex flex-col gap-2">
+              <span class="text-sm text-gray-300 text-center">Fri</span>
+              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+                <li>2</li>
+                <li>9</li>
+                <li>16</li>
+                <li>23</li>
+                <li>30</li>
+              </ul>
+            </li>
+            <!-- Sat -->
+            <li class="flex flex-col gap-2">
+              <span class="text-sm text-gray-300 text-center">Sat</span>
+              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+                <li>3</li>
+                <li>10</li>
+                <li>17</li>
+                <li>24</li>
+                <li>31</li>
+              </ul>
+            </li>
+            <!-- Sun -->
+            <li class="flex flex-col gap-2">
+              <span class="text-sm text-gray-300 text-center">Sun</span>
+              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal] ">
+                <li>4</li>
+                <li>11</li>
+                <li>18</li>
+                <li>25</li>
+              </ul>
+            </li>
+            <!-- Mon -->
+            <li class="flex flex-col gap-2">
+              <span class="text-sm text-gray-300 text-center">Mon</span>
+              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+                <li>5</li>
+                <li>12</li>
+                <li>19</li>
+                <li>26</li>
+              </ul>
+            </li>
+            <!-- Tue -->
+            <li class="flex flex-col gap-2">
+              <span class="text-sm text-gray-300 text-center">Tue</span>
+              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+                <li>6</li>
+                <li>13</li>
+                <li>20</li>
+                <li>27</li>
+              </ul>
+            </li>
+            <!-- Wed -->
+            <li class="flex flex-col gap-2">
+              <span class="text-sm text-gray-300 text-center">Wed</span>
+              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+                <li>7</li>
+                <li>14</li>
+                <li>21</li>
+                <li>28</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <section class="flex gap-4 *:bg-green-700/40 *:rounded-xl *:p-4 *:py-7 *:grow *:justify-center *:border *:border-zinc-400/50 *:backdrop-blur-md *:flex *:items-center *:gap-4 *:hover:bg-green-700/60 *:transition-colors *:cursor-pointer *:max-h-fit flex-wrap">
+        <div  >
+          <span class="p-1 rounded-lg bg-amber-400"><img width="40" height="40" src="https://img.icons8.com/fluency-systems-regular/48/000000/clipboard--v1.png" alt="clipboard--v1"/></span>
+          <h4 class="text-gray-300"><span class="upcoming-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2">25</span><br>
+            Upcoming
+          </h4>
+          
+        </div>
+
+        <div >
+          <span class="p-1 rounded-lg bg-amber-400"><img width="40" height="40" src="https://img.icons8.com/external-sbts2018-solid-sbts2018/40/1A1A1A/external-progress-basic-ui-elements-2.2-sbts2018-solid-sbts2018.png" alt="external-progress-basic-ui-elements-2.2-sbts2018-solid-sbts2018"/></span>
+          <h4 class="text-gray-300"><span class="in-progress-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2">7</span><br>
+            In progress
+          </h4>
+          
+        </div>
+
+        <div>
+          <span class="p-1 rounded-lg bg-amber-400"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40" viewBox="0 0 24 24"
+          style="fill:000;">
+              <path d="M 12 2 C 6.486 2 2 6.486 2 12 C 2 17.514 6.486 22 12 22 C 17.514 22 22 17.514 22 12 C 22 10.874 21.803984 9.7942031 21.458984 8.7832031 L 19.839844 10.402344 C 19.944844 10.918344 20 11.453 20 12 C 20 16.411 16.411 20 12 20 C 7.589 20 4 16.411 4 12 C 4 7.589 7.589 4 12 4 C 13.633 4 15.151922 4.4938906 16.419922 5.3378906 L 17.851562 3.90625 C 16.203562 2.71225 14.185 2 12 2 z M 21.292969 3.2929688 L 11 13.585938 L 7.7070312 10.292969 L 6.2929688 11.707031 L 11 16.414062 L 22.707031 4.7070312 L 21.292969 3.2929688 z"></path>
+          </svg></span>
+          <h4 class="text-gray-300"><span class="done-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2">14</span><br>
+            Completed
+          </h4>
+          
+        </div>
+
+        <div>
+          <span class="p-1 rounded-lg bg-amber-400"><img width="40" height="40" class="rotate-180" src="https://img.icons8.com/ios/50/1A1A1A/low-priority.png" alt="high-priority"/></span>
+          <h4 class="text-gray-300"><span class="high-p-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2">9</span><br>
+            High priority
+          </h4>
+          
+        </div>
+
+        <div>
+          <span class="p-1 rounded-lg bg-amber-400"><img width="40" height="40" src="https://img.icons8.com/ios/50/1A1A1A/low-priority.png" alt="low-priority"/></span>
+          <h4 class="text-gray-300"><span class="low-p-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2">22</span><br>
+            Low priority
+          </h4>
+          
+        </div>
+
+      </section>
     </main>
 
-    <footer>
-      
-    </footer>
+    <script src="js/Dashboard/dashboard.js" type="module"></script>
   </body>
 </html>
