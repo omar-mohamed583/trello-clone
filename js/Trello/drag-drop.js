@@ -193,6 +193,19 @@ document.body.addEventListener('pointerup', e => {
   }
 }, {passive: false});
 
+document.body.addEventListener('pointercancel', e => {
+  document.querySelectorAll('.drop-zone-indicator').forEach(zone => zone.classList.remove('active'));
+
+  clonedSect?.remove();
+  clonedNode?.remove();
+
+  if (draggedSect) { draggedSect.style.opacity = '1'; draggedSect.style.pointerEvents = 'all'; }
+  if (draggedNode) { draggedNode.style.opacity = '1'; draggedNode.style.pointerEvents = 'all'; }
+
+  resetSect();
+  resetSect(false);
+}, {passive: false});
+
 function getClosestSect(eleDimensions) {
   const lists = [...document.querySelectorAll('.list')];
   let closest = null,
