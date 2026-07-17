@@ -1,5 +1,5 @@
 import * as usersFile from '../Data/users.js';
-import { addBoard, addSection, boards, saveBoard } from '../Data/boards.js';
+import { addBoard, boards } from '../Data/boards.js';
 
 const createAccBtn = document.querySelector('.create-acc-act'),
   createAccCh = document.querySelector('.create-acc-ch'),
@@ -17,15 +17,14 @@ window.onload = () => {
   actionParam = url.searchParams.get('act');
   if (actionParam === 'si') document.querySelectorAll('form').forEach(form => form.classList.toggle('active-form'));
 
-//   Array.from(activeFormAnimationEle).reverse().forEach((ele, ind) => {
-//     ele.setAttribute('style', `--delay:${Math.ceil((ind + 1) * 120)}ms`);
-//   });
+  Array.from(activeFormAnimationEle).reverse().forEach((ele, ind) => {
+    ele.setAttribute('style', `--delay:${Math.ceil((ind + 1) * 120)}ms`);
+  });
 
-//   Array.from(inActiveFormAnimationEle).reverse().forEach((ele, ind) => {
-//     ele.setAttribute('style', `--delay:${Math.ceil((ind + 1) * 120)}ms`);
-//   })
+  Array.from(inActiveFormAnimationEle).reverse().forEach((ele, ind) => {
+    ele.setAttribute('style', `--delay:${Math.ceil((ind + 1) * 120)}ms`);
+  })
 }
-
 
 let OTP = JSON.parse(localStorage.getItem('OTP')) ?? null;
 let isTrans = false;
@@ -88,7 +87,7 @@ document.body.addEventListener('click', e => {
       }
 
       isTrans = false;
-    }, 510);
+    }, 910);
   }
 });
 
@@ -197,13 +196,14 @@ submitOtpBtn.addEventListener('click', () => {
 
     dia.close();
 
+    localStorage.removeItem('otp');
     window.location.href = './index.html';
   } else {
     showErr('Incorrect OTP');
   }
 });
 
-export default function showErr(msg) {
+function showErr(msg) {
   const oldErrDiv = document.querySelector('.err');
   if (oldErrDiv) return;
   const errDiv = document.createElement('div');

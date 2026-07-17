@@ -10,22 +10,15 @@
     <link
       href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap"
       rel="stylesheet"
+      crossorigin
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="icon" href="images/logo.svg" />
   </head>
 
-  <body
-    class="bg-[#091413] text-white  min-h-dvh tabular-nums"
-  >
+  <body class="bg-[#091413] text-white min-h-dvh tabular-nums">
     <header class="fixed inset-[0_0_auto_0] bg-(--clr-accent-200) z-100000">
       <div
-        class="max-w-[1900px] mx-auto p-6 sm:px-2  flex justify-between items-center"
+        class="max-w-[1900px] mx-auto p-6 sm:px-2 flex justify-between items-center"
       >
         <h1
           class="text-lg md:text-2xl flex gap-2 font-bold text-(--clr-accent-400) cursor-pointer items-center me-auto animate-[bright_6s_infinite_alternate] max-w-fit"
@@ -83,7 +76,9 @@
       </div>
     </header>
 
-    <main class="grid-cont max-w-[1900px] grid p-4 gap-10 pt-39 mx-auto">
+    <main
+      class="grid-cont [content-visibility:auto] contain- max-w-[1900px] grid p-4 pb-8 gap-10 pt-42 mx-auto"
+    >
       <section
         class="animate welcome-div grid gap-1 border border-green-600/50 p-7 rounded-lg bg-green-600/30 backdrop-blur-sm overflow-hidden relative"
         data-bg="#00ff80"
@@ -95,8 +90,8 @@
           You have <span class="tasks-today">7</span> tasks today
         </p>
 
-        <button
-          type="button"
+        <a
+          href="#analytics"
           class="max-w-fit bg-purple-500/40 p-2 px-3 mt-8 border border-purple-400/20 rounded-md cursor-pointer flex items-center gap-1 transition-colors hover:bg-purple-500 duration-300 focus-visible:bg-purple-500"
         >
           See analytics
@@ -109,7 +104,7 @@
           >
             <path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
           </svg>
-        </button>
+        </a>
 
         <div
           class="des-div absolute rounded-full bg-emerald-500 h-70 w-40 right-60 top-[60%] backdrop-blur-lg border border-emerald-400"
@@ -122,7 +117,7 @@
         ></div>
       </section>
 
-      <aside
+      <section
         class="animate calender bg-[#408a7154] rounded-lg max-h-fit p-5 border border-zinc-400/50 grid gap-6 backdrop-blur-md grid-rows-[auto_1fr]"
         data-bg="#00ffa9"
       >
@@ -135,6 +130,7 @@
             <button
               type="button"
               class="aspect-square p-2 border border-zinc-500/40 rotate-180 rounded-md"
+              aria-label="Last Month"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -154,6 +150,7 @@
             <button
               type="button"
               class="aspect-square p-2 border border-zinc-500/40 rounded-sm"
+              aria-label="Next Month"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -173,7 +170,9 @@
             <!-- Thu -->
             <li class="flex flex-col gap-2">
               <span class="text-sm text-gray-300 text-center">Thu</span>
-              <ul class="grid *:flex *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+              <ul
+                class="grid *:flex *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]"
+              >
                 <li>1</li>
                 <li>8</li>
                 <li>15</li>
@@ -184,7 +183,9 @@
             <!-- Fri -->
             <li class="flex flex-col gap-2">
               <span class="text-sm text-gray-300 text-center">Fri</span>
-              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+              <ul
+                class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]"
+              >
                 <li>2</li>
                 <li>9</li>
                 <li>16</li>
@@ -195,7 +196,9 @@
             <!-- Sat -->
             <li class="flex flex-col gap-2">
               <span class="text-sm text-gray-300 text-center">Sat</span>
-              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+              <ul
+                class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]"
+              >
                 <li>3</li>
                 <li>10</li>
                 <li>17</li>
@@ -206,7 +209,9 @@
             <!-- Sun -->
             <li class="flex flex-col gap-2">
               <span class="text-sm text-gray-300 text-center">Sun</span>
-              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal] ">
+              <ul
+                class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]"
+              >
                 <li>4</li>
                 <li>11</li>
                 <li>18</li>
@@ -216,7 +221,9 @@
             <!-- Mon -->
             <li class="flex flex-col gap-2">
               <span class="text-sm text-gray-300 text-center">Mon</span>
-              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+              <ul
+                class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]"
+              >
                 <li>5</li>
                 <li>12</li>
                 <li>19</li>
@@ -226,7 +233,9 @@
             <!-- Tue -->
             <li class="flex flex-col gap-2">
               <span class="text-sm text-gray-300 text-center">Tue</span>
-              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+              <ul
+                class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]"
+              >
                 <li>6</li>
                 <li>13</li>
                 <li>20</li>
@@ -236,7 +245,9 @@
             <!-- Wed -->
             <li class="flex flex-col gap-2">
               <span class="text-sm text-gray-300 text-center">Wed</span>
-              <ul class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]">
+              <ul
+                class="grid *:flex *:py-1 *:place-content-center *:rounded-md *:cursor-pointer *:text-center [&>li:hover]:bg-purple-400/80 [&>li]:transition-colors *:text-sm *:leading-[normal]"
+              >
                 <li>7</li>
                 <li>14</li>
                 <li>21</li>
@@ -245,55 +256,278 @@
             </li>
           </ul>
         </div>
-      </aside>
+      </section>
 
-      <section class="flex gap-4 *:bg-green-700/40 *:rounded-xl *:p-4 *:py-7 *:grow *:justify-center *:border *:border-zinc-400/50 *:backdrop-blur-md *:flex *:items-center *:gap-4 *:hover:bg-green-700/60 *:transition-colors *:cursor-pointer *:max-h-fit flex-wrap">
-        <div  >
-          <span class="p-1 rounded-lg bg-amber-400"><img width="40" height="40" src="https://img.icons8.com/fluency-systems-regular/48/000000/clipboard--v1.png" alt="clipboard--v1"/></span>
-          <h4 class="text-gray-300"><span class="upcoming-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2">25</span><br>
+      <section
+        class="flex gap-4 *:bg-green-700/40 *:rounded-xl *:p-4 *:py-7 *:grow *:justify-center *:border *:border-zinc-400/50 *:backdrop-blur-md *:flex *:items-center *:gap-4 *:hover:bg-green-700/60 *:transition-colors *:cursor-pointer *:max-h-fit flex-wrap"
+      >
+        <div>
+          <span class="p-1 rounded-lg bg-amber-400"
+            ><img
+              width="40"
+              height="40"
+              src="https://img.icons8.com/fluency-systems-regular/48/000000/clipboard--v1.png"
+              alt="clipboard--v1"
+          /></span>
+          <h4 class="text-gray-300">
+            <span
+              class="upcoming-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2 animate-num"
+              >0</span
+            ><br />
             Upcoming
           </h4>
-          
         </div>
 
-        <div >
-          <span class="p-1 rounded-lg bg-amber-400"><img width="40" height="40" src="https://img.icons8.com/external-sbts2018-solid-sbts2018/40/1A1A1A/external-progress-basic-ui-elements-2.2-sbts2018-solid-sbts2018.png" alt="external-progress-basic-ui-elements-2.2-sbts2018-solid-sbts2018"/></span>
-          <h4 class="text-gray-300"><span class="in-progress-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2">7</span><br>
+        <div>
+          <span class="p-1 rounded-lg bg-amber-400"
+            ><img
+              width="40"
+              height="40"
+              src="https://img.icons8.com/external-sbts2018-solid-sbts2018/40/1A1A1A/external-progress-basic-ui-elements-2.2-sbts2018-solid-sbts2018.png"
+              alt="external-progress-basic-ui-elements-2.2-sbts2018-solid-sbts2018"
+          /></span>
+          <h4 class="text-gray-300">
+            <span
+              class="in-progress-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2 animate-num"
+              >0</span
+            ><br />
             In progress
           </h4>
-          
         </div>
 
         <div>
-          <span class="p-1 rounded-lg bg-amber-400"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40" viewBox="0 0 24 24"
-          style="fill:000;">
-              <path d="M 12 2 C 6.486 2 2 6.486 2 12 C 2 17.514 6.486 22 12 22 C 17.514 22 22 17.514 22 12 C 22 10.874 21.803984 9.7942031 21.458984 8.7832031 L 19.839844 10.402344 C 19.944844 10.918344 20 11.453 20 12 C 20 16.411 16.411 20 12 20 C 7.589 20 4 16.411 4 12 C 4 7.589 7.589 4 12 4 C 13.633 4 15.151922 4.4938906 16.419922 5.3378906 L 17.851562 3.90625 C 16.203562 2.71225 14.185 2 12 2 z M 21.292969 3.2929688 L 11 13.585938 L 7.7070312 10.292969 L 6.2929688 11.707031 L 11 16.414062 L 22.707031 4.7070312 L 21.292969 3.2929688 z"></path>
-          </svg></span>
-          <h4 class="text-gray-300"><span class="done-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2">14</span><br>
+          <span class="p-1 rounded-lg bg-amber-400"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              x="0px"
+              y="0px"
+              width="40"
+              height="40"
+              viewBox="0 0 24 24"
+              style="fill: 000"
+            >
+              <path
+                d="M 12 2 C 6.486 2 2 6.486 2 12 C 2 17.514 6.486 22 12 22 C 17.514 22 22 17.514 22 12 C 22 10.874 21.803984 9.7942031 21.458984 8.7832031 L 19.839844 10.402344 C 19.944844 10.918344 20 11.453 20 12 C 20 16.411 16.411 20 12 20 C 7.589 20 4 16.411 4 12 C 4 7.589 7.589 4 12 4 C 13.633 4 15.151922 4.4938906 16.419922 5.3378906 L 17.851562 3.90625 C 16.203562 2.71225 14.185 2 12 2 z M 21.292969 3.2929688 L 11 13.585938 L 7.7070312 10.292969 L 6.2929688 11.707031 L 11 16.414062 L 22.707031 4.7070312 L 21.292969 3.2929688 z"
+              ></path></svg
+          ></span>
+          <h4 class="text-gray-300">
+            <span
+              class="done-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2 animate-num"
+              >0</span
+            ><br />
             Completed
           </h4>
-          
         </div>
 
         <div>
-          <span class="p-1 rounded-lg bg-amber-400"><img width="40" height="40" class="rotate-180" src="https://img.icons8.com/ios/50/1A1A1A/low-priority.png" alt="high-priority"/></span>
-          <h4 class="text-gray-300"><span class="high-p-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2">9</span><br>
+          <span class="p-1 rounded-lg bg-amber-400"
+            ><img
+              width="40"
+              height="40"
+              class="rotate-180"
+              src="https://img.icons8.com/ios/50/1A1A1A/low-priority.png"
+              alt="high-priority"
+          /></span>
+          <h4 class="text-gray-300">
+            <span
+              class="high-priority text-white text-3xl leading-[normal] -mt-3 inline-block mb-2 animate-num"
+              >0</span
+            ><br />
             High priority
           </h4>
-          
         </div>
 
         <div>
-          <span class="p-1 rounded-lg bg-amber-400"><img width="40" height="40" src="https://img.icons8.com/ios/50/1A1A1A/low-priority.png" alt="low-priority"/></span>
-          <h4 class="text-gray-300"><span class="low-p-tasks text-white text-3xl leading-[normal] -mt-3 inline-block mb-2">22</span><br>
+          <span class="p-1 rounded-lg bg-amber-400"
+            ><img
+              width="40"
+              height="40"
+              src="https://img.icons8.com/ios/50/1A1A1A/low-priority.png"
+              alt="low-priority"
+          /></span>
+          <h4 class="text-gray-300">
+            <span
+              class="low-priority text-white text-3xl leading-[normal] -mt-3 inline-block mb-2 animate-num"
+              >0</span
+            ><br />
             Low priority
           </h4>
-          
+        </div>
+      </section>
+
+      <section id="analytics" class="analytics grid gap-6 mt-20">
+        <div
+          class="priority grid border border-zinc-600/30 p-8 rounded-lg bg-gray-50/2 backdrop-blur-md"
+        >
+          <h3 class="text-3xl leading-[normal] font-semibold">
+            Priority Analytics
+          </h3>
+
+          <ul class="mt-5 flex gap-6 *:text-zinc-300">
+            <li>
+              <span
+                class="animate-pulse-out rounded-[50%] aspect-square w-3 bg-rose-500 inline-block mr-2"
+                style="--clr: @apply bg-rose-500"
+              ></span>
+              High Priority
+            </li>
+            <li>
+              <span
+                class="animate-pulse-out rounded-[50%] aspect-square w-3 bg-yellow-500 inline-block mr-2"
+                style="--clr: @apply bg-yellow-500"
+              ></span>
+              Medium Priority
+            </li>
+            <li>
+              <span
+                class="animate-pulse-out rounded-[50%] aspect-square w-3 bg-green-500 inline-block mr-2"
+                style="--clr: @apply bg-green-500"
+              ></span>
+              low Priority
+            </li>
+          </ul>
+
+          <div class="chart mt-13 relative mb-13">
+            <div
+              class="container-circle relative rounded-[50%] w-50 mx-auto aspect-square min-h-[50%]"
+            >
+              <div
+                class="grad-div absolute w-full h-full aspect-square rounded-[50%]"
+              ></div>
+              <span
+                class="bg-gray-50 total text-black left-[50%] top-[50%] absolute translate-[-50%] text-3xl leading-[normal] rounded-[50%] grid place-content-center w-[70%] aspect-square font-medium animate-num"
+                >0</span
+              >
+              <div
+                class="stat-abs absolute p-3 border border-white/50 grid bg-black gap-2 *:text-sm *:leading-[normal] rounded-lg *:flex *:justify-between *:gap-4 transition-[opacity,translate] ease-linear min-w-max"
+                style="opacity: 0; pointer-events: none"
+              >
+                <p>
+                  High Priority:
+                  <span class="high-priority animate-num">0</span>
+                </p>
+                <p>
+                  Normal Priority:
+                  <span class="normal-priority animate-num">0</span>
+                </p>
+                <p>
+                  Low Priority: <span class="low-priority animate-num">0</span>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
+        <div
+          class="stat flex flex-col border border-zinc-600/30 p-8 rounded-lg bg-gray-50/2 backdrop-blur-md gap-12"
+        >
+          <h3 class="text-3xl leading-[normal] font-semibold mb-3">
+            Tasks Stats
+          </h3>
+
+          <table class="*:text-left rounded-md mb-12">
+            <thead>
+              <tr class="*:p-3 *:pb-4 *:text-xl *:leading-[normal] border-b">
+                <th>State</th>
+                <th>Count</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+
+            <tbody class="*:text-zinc-300 [&_>_*:not(:last-child)]:border-b">
+              <tr class="*:p-3">
+                <td>Completed</td>
+                <td><span class="done-tasks animate-num ms-5"></span></td>
+                <td><span class="complete-rate animate-num ms-8"></span>%</td>
+              </tr>
+
+              <tr class="*:p-3">
+                <td>In Progress</td>
+                <td><span class="in-progress-tasks animate-num ms-5"></span></td>
+                <td><span class="in-prog-rate animate-num ms-8"></span>%</td>
+              </tr>
+
+              <tr class="*:p-3">
+                <td>Not Started</td>
+                <td><span class="not-start animate-num ms-5"></span></td>
+                <td><span class="not-start-rate animate-num ms-8"></span>%</td>
+              </tr>
+
+              <tr class="*:p-3">
+                <td>Others</td>
+                <td><span class="others animate-num inline-block ms-5"></span></td>
+                <td><span class="others-rate animate-num ms-8"></span>%</td>
+              </tr>
+
+              <tr class="*:p-3 *:pt-4">
+                <td><span class="font-semibold">Total Tasks</span></td>
+                <td></td>
+                <td><span class="total animate-num ms-5">0</span> Tasks</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <figure>
+            <blockquote class="mb-5">
+              <p class="text-3xl leading-[normal] tracking-md">For every <span class="text-shadow-lg text-shadow-rose-600">minute</span> spent organizing, an <span class="text-shadow-lg text-shadow-green-600">hour</span> is earned.</p>
+            </blockquote>
+            <figcaption class="text-zinc-400 text-lg leading-[normal]">&mdash; <cite>Benjamin Franklin</figcaption>
+          </figure>
+        </div>
+
+        <div class="board-stat grid border border-zinc-600/30 p-8 pb-12 rounded-lg bg-gray-50/2 backdrop-blur-md gap-10">
+          <h3 class="text-3xl leading-[normal] font-semibold">Boards Analytics</h3>
+
+          <ul
+            class="flex flex-wrap gap-4 *:grow *:basis-40 *:flex *:items-center *:gap-4 *:border *:border-zinc-500/30 *:rounded-lg *:p-5 *:bg-white/[0.02]"
+          >
+            <li>
+              <span
+                class="grid place-content-center rounded-lg bg-amber-400/90 w-11 h-11 shrink-0"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="#1A1A1A">
+                  <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm120 200h120v-120H320v120Z"/>
+                </svg>
+              </span>
+              <div>
+                <span class="total-boards text-white text-2xl leading-[normal] block font-semibold animate-num">0</span>
+                <span class="text-gray-400 text-sm">Total Boards</span>
+              </div>
+            </li>
+
+            <li>
+              <span
+                class="grid place-content-center rounded-lg bg-amber-400/90 w-11 h-11 shrink-0"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="#1A1A1A">
+                  <path d="M120-160v-80h80v-480h-80v-80h240v80h-80v480h80v80H120Zm320 0v-80h80v-160H360v-80h160v-160h-80v-80h240v80h-80v160h160v80H600v160h80v80H440Z"/>
+                </svg>
+              </span>
+              <div>
+                <span class="avg-tasks-per-board text-white text-2xl leading-[normal] block font-semibold animate-num">0</span>
+                <span class="text-gray-400 text-sm">Avg. Tasks / Board</span>
+              </div>
+            </li>
+
+            <li>
+              <span
+                class="grid place-content-center rounded-lg bg-amber-400/90 w-11 h-11 shrink-0"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="#1A1A1A">
+                  <path d="M280-280h80v-200h-80v200Zm160 0h80v-320h-80v320Zm160 0h80v-120h-80v120ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Z"/>
+                </svg>
+              </span>
+              <div>
+                <span class="largest-board-count text-white text-2xl leading-[normal] block font-semibold animate-num">0</span>
+                <span class="text-gray-400 text-sm">Most Tasks in a Board</span>
+              </div>
+            </li>
+          </ul>
+
+        </div>
       </section>
     </main>
 
-    <script src="js/Dashboard/dashboard.js" type="module"></script>
+    <script src="js/Dashboard/dashboard.js" type="module" defer></script>
   </body>
 </html>
