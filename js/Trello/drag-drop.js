@@ -20,7 +20,7 @@ observer.observe(mainContainer, {
   childList: true
 })
 
-let draggedSect, clonedSect, clonedNode, draggedNode;
+let dragged, draggedSect, clonedSect, clonedNode, draggedNode;
 
 const updateClonedSectPos = throttle(coords => {
   if (!clonedSect) return;
@@ -35,6 +35,7 @@ const updateClonedNodePos = throttle(coords => {
 });
 
 document.body.addEventListener('pointerdown', e => {
+  dragged = true;
   draggedSect = e.target.classList.contains('drag') ?
     e.target.closest('.list') : e.target.closest('.drag') ? e.target.closest('.list') : null,
     draggedNode = e.target.classList.contains('grab-node') ?
@@ -59,20 +60,18 @@ document.body.addEventListener('pointerdown', e => {
 }, {passive: false});
 
 document.body.addEventListener('pointermove', e => {
-  if (clonedSect || clonedNode) {
+  if (dragged) {
     e.preventDefault();
     
-    // THIS IS THE FIX — get coordinates properly for touch
     let clientX = e.clientX;
     let clientY = e.clientY;
     
-    // If clientX is undefined (touch event), get from touches array
     if (clientX === undefined && e.touches && e.touches.length > 0) {
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     }
     
-    if (!clientX || !clientY) return; // Safety check
+    if (!clientX || !clientY) return;
 
     if ((clientX <= mainContainerRect.right) &&
       (clientX >= mainContainerRect.left) &&
@@ -99,6 +98,7 @@ document.body.addEventListener('pointermove', e => {
 }, {passive: false});
 
 document.body.addEventListener('pointerup', e => {
+  dragged = false;
   document.querySelectorAll('.drop-zone-indicator').forEach(zone => zone.classList.remove('active'));
 
   if (draggedSect &&
@@ -394,6 +394,7 @@ function createClonedEle(ele, e) {
   clonedEle.style.top = clientY - offset.y + 'px';
   clonedEle.style.left = clientX - offset.x + 'px';
   clonedEle.style.width = draggedRect.width + 'px';
+  clonedEle.style.rotate = '5deg';
   clonedEle.style.height = draggedRect.height + 'px';
 
   clonedEle.classList.replace('transition-all', 'transition-[translate,left,top,outline-color]');

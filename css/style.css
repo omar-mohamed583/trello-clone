@@ -988,9 +988,6 @@
   .bg-orange-400 {
     background-color: var(--color-orange-400);
   }
-  .bg-purple-500 {
-    background-color: var(--color-purple-500);
-  }
   .bg-purple-500\/10 {
     background-color: color-mix(in srgb, oklch(62.7% 0.265 303.9) 10%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -1464,18 +1461,6 @@
   .\[grid-template-areas\:\'stack\'\] {
     grid-template-areas: 'stack';
   }
-  .text-shadow-green-200 {
-    --tw-text-shadow-color: oklch(92.5% 0.084 155.995);
-    @supports (color: color-mix(in lab, red, red)) {
-      --tw-text-shadow-color: color-mix(in oklab, var(--color-green-200) var(--tw-text-shadow-alpha), transparent);
-    }
-  }
-  .text-shadow-green-500 {
-    --tw-text-shadow-color: oklch(72.3% 0.219 149.579);
-    @supports (color: color-mix(in lab, red, red)) {
-      --tw-text-shadow-color: color-mix(in oklab, var(--color-green-500) var(--tw-text-shadow-alpha), transparent);
-    }
-  }
   .text-shadow-green-600 {
     --tw-text-shadow-color: oklch(62.7% 0.194 149.214);
     @supports (color: color-mix(in lab, red, red)) {
@@ -1484,9 +1469,6 @@
   }
   .text-shadow-lg {
     text-shadow: 0px 1px 2px var(--tw-text-shadow-color, rgb(0 0 0 / 0.1)), 0px 3px 2px var(--tw-text-shadow-color, rgb(0 0 0 / 0.1)), 0px 4px 8px var(--tw-text-shadow-color, rgb(0 0 0 / 0.1));
-  }
-  .text-shadow-md {
-    text-shadow: 0px 1px 1px var(--tw-text-shadow-color, rgb(0 0 0 / 0.1)), 0px 1px 2px var(--tw-text-shadow-color, rgb(0 0 0 / 0.1)), 0px 2px 4px var(--tw-text-shadow-color, rgb(0 0 0 / 0.1));
   }
   .text-shadow-rose-600 {
     --tw-text-shadow-color: oklch(58.6% 0.253 17.585);
@@ -1745,48 +1727,6 @@
       --tw-backdrop-blur: blur(var(--blur-xl));
       -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
       backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-    }
-  }
-  .after\:absolute {
-    &::after {
-      content: var(--tw-content);
-      position: absolute;
-    }
-  }
-  .after\:bottom-0\.5 {
-    &::after {
-      content: var(--tw-content);
-      bottom: calc(var(--spacing) * 0.5);
-    }
-  }
-  .after\:h-1 {
-    &::after {
-      content: var(--tw-content);
-      height: var(--spacing);
-    }
-  }
-  .after\:w-1 {
-    &::after {
-      content: var(--tw-content);
-      width: var(--spacing);
-    }
-  }
-  .after\:rounded-full {
-    &::after {
-      content: var(--tw-content);
-      border-radius: calc(infinity * 1px);
-    }
-  }
-  .after\:bg-emerald-400 {
-    &::after {
-      content: var(--tw-content);
-      background-color: var(--color-emerald-400);
-    }
-  }
-  .after\:content-\[\"\"\] {
-    &::after {
-      --tw-content: "";
-      content: var(--tw-content);
     }
   }
   .last\:mr-1 {
@@ -2859,11 +2799,6 @@ tr {
   inherits: false;
   initial-value: 100%;
 }
-@property --tw-content {
-  syntax: "*";
-  initial-value: "";
-  inherits: false;
-}
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -2933,7 +2868,6 @@ tr {
       --tw-ease: initial;
       --tw-text-shadow-color: initial;
       --tw-text-shadow-alpha: 100%;
-      --tw-content: "";
     }
   }
 }

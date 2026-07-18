@@ -4,10 +4,10 @@ export function createTasksAnalytics() {
   const userId = users.activeUserId,
     userBoards = boards.boardsData.filter(board => board.userId === userId);
   
-  let totalTasks = 0,
-    highPriorityTasks = 0,
+  let highPriorityTasks = 0,
     normalPriorityTasks = 0,
     lowPriorityTasks = 0,
+    totalTasks = 0,
     doneTasks = 0,
     inProgressTasks = 0,
     notStartedTasks = 0,
@@ -15,10 +15,10 @@ export function createTasksAnalytics() {
 
   // Count Tasks By Stat
   userBoards.forEach(board => board.content.forEach(sec => {
-    if (sec.title === 'Done') doneTasks = sec.nodes.length;
-    else if (sec.title === 'In Progress') inProgressTasks = sec.nodes.length;
-    else if (sec.title === 'Todo') notStartedTasks = sec.nodes.length;
-    else othersStat++;
+    if (sec.title === "Done") doneTasks += sec.nodes.length;
+    else if (sec.title === "In Progress") inProgressTasks += sec.nodes.length;
+    else if (sec.title === "Todo") notStartedTasks += sec.nodes.length;
+    else othersStat += sec.length;
   }))
 
   // Count Tasks By Priority
@@ -28,20 +28,20 @@ export function createTasksAnalytics() {
     else if (node.priority === 'medium') normalPriorityTasks++;
     else lowPriorityTasks++;
   })));
-
+  
   return {
     total: totalTasks,
     highPrioCount: highPriorityTasks,
-    highPercent: Math.trunc(highPriorityTasks / totalTasks * 100),
+    highPercent: +(highPriorityTasks / totalTasks * 100).toFixed(1),
     normalPrioCount: normalPriorityTasks,
-    normalPercent: Math.trunc(normalPriorityTasks / totalTasks * 100),
+    normalPercent: +(normalPriorityTasks / totalTasks * 100).toFixed(1),
     lowPrioCount: lowPriorityTasks,
-    lowPercent: Math.trunc(lowPriorityTasks / totalTasks * 100),
+    lowPercent: +(lowPriorityTasks / totalTasks * 100).toFixed(1),
     completedTasks: doneTasks,
     inProgTasks: inProgressTasks,
     notStartedTasks: notStartedTasks,
-    othersStat,
-    otherStatRate: Math.trunc(othersStat / totalTasks * 100)
+    othersStat: othersStat ? othersStat : 0,
+    otherStatRate: othersStat ? +(othersStat / totalTasks * 100).toFixed(1) : 0
   }
 }
 

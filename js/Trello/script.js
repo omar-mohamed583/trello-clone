@@ -74,7 +74,6 @@ document.body.addEventListener('click', e => {
     if (currentActiveBoardId === +boardId) {
 
       const anotherUserBoard = boardsData.boardsData.find(board => board.userId === users.activeUserId);
-      console.log('another', anotherUserBoard)
 
       if (anotherUserBoard) {
         users.activeBoardId = anotherUserBoard.boardId;
@@ -85,7 +84,6 @@ document.body.addEventListener('click', e => {
       } else {
 
         mainContainer.innerHTML = '<p class="justify-self-center">No boards to show, please add one.</p>';
-        console.log('no another');
         currentBoardName.textContent = '';
         users.activeBoardId = null;
         activeBoardId = null;
@@ -95,7 +93,6 @@ document.body.addEventListener('click', e => {
     }
 
     if (!boardsData.boardsData.length) {
-      console.log('didn\'t found another board');
       boardsList.innerHTML = '<li class="no-boards cursor-auto">No boards to show.</li>';
       mainContainer.innerHTML = '<p class="justify-self-center">No boards to show, please add one.</p>';
     }
@@ -103,7 +100,6 @@ document.body.addEventListener('click', e => {
 
   // Rename
   else if (e.target.classList.contains('rename-board') || e.target.closest('.rename-board')) {
-    console.log('edit')
     const boardItem = e.target.closest('.boardItem'),
       { boardId } = boardItem.dataset,
       boardName = boardItem.querySelector('.truncate');
@@ -168,7 +164,6 @@ document.body.addEventListener('click', e => {
     const addedBoardName = document.getElementById('board-name').value,
       sectionsNames = document.querySelectorAll('input[name="section"]'),
       namesArray = sectionsNames.length ? Array.from(sectionsNames).map(sect => sect.value) : null;
-    console.log(namesArray)
 
     if (addedBoardName) {
       if (namesArray.length > 1 || namesArray[0]) addBoardToMain(addedBoardName, ...namesArray);
@@ -399,7 +394,6 @@ boardsList.addEventListener('click', e => {
     if (!(e.target.classList.contains('more-setting') || e.target.closest('.more-setting'))) {
 
       const itemBoardId = +boardItem.dataset.boardId;
-      console.log(`clicked Board ${itemBoardId}`, `active Board: ${activeBoardId}`)
       if (itemBoardId === activeBoardId) return;
       else {
         users.activeBoardId = itemBoardId;
@@ -810,7 +804,6 @@ function displayBoard(boardId, board = '') {
         Add new column
       </button>`;
 
-  console.log(board)
   currentBoardName.textContent = board?.title;
   mainContainer.innerHTML = fullMainHTML;
 }
