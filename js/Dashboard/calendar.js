@@ -6,7 +6,7 @@ const MONTH_NAMES = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-let viewYear, viewMonth; // viewMonth is 0-indexed
+let viewYear, viewMonth;
 
 const monthLabel = document.querySelector('.month'),
   daysContainer = document.querySelector('.days'),
@@ -70,15 +70,7 @@ function renderCalendar() {
       cellDate.setHours(0, 0, 0, 0);
 
       if (isCurrentMonth && day === today.getDate()) {
-        dateLi.classList.add('bg-purple-500', 'font-bold');
-      }
-
-      if (getTasksDueOn(cellDate) > 0) {
-        dateLi.classList.add(
-          'relative', 'after:content-[""]', 'after:absolute',
-          'after:bottom-0.5', 'after:w-1', 'after:h-1',
-          'after:rounded-full', 'after:bg-emerald-400'
-        );
+        dateLi.classList.add('active');
       }
 
       dateList.appendChild(dateLi);
